@@ -1,0 +1,38 @@
+     control        00001  PASS 1    SELECT PROGRAM                    00003712L
+     999999    headr                                                   00003713L
+     control        02000  PASS 1    RETRIEVE UPDATE PROGRAM           00003713L
+     control        00001  PASS 1    COPY SYSTEM                       00003714L
+     control        01500  PASS 1    UPDATE LIBRARY                    00003715L
+     control        02000  PASS 1    OUTPUT LIBRARY                    00003716L
+     control        01650  PASS 2    PROCESS IOCS-MAIN 1               00003721L
+     control        00001  PASS 2    PROCESS IOCS-MAIN 2               00003722L
+     control        00341  PASS 2    COPY DTF TABLE                    00003723L
+     control        00101  PASS 2    ALTER OVERLAY                     00003724L
+     control        00341  PASS 2    END OVERLAY                       00003725L
+     control        01650  PASS 2    MACRO GENERATOR                   00003726L
+     control        00001  PASS 2    INITIAL ASSEMBLY                  00003727L
+     control        00001  PASS 2    ALTER ASSEMBLY                    00003728L
+     control        02210  PASS 3    INITIALIZATION                    00003731L
+     control        00001  PASS 3    LEFT HAND IMAGE                   00003732L
+     control        02465  PASS 3    RIGHT HAND IMAGE                  00003733L
+     control        00626  PASS 3    PROCESS FREE FORM INPUT           00003734L
+     control        00626  PASS 3    PROCESS FIXED FORM INPUT          00003735L
+     control        00085  PASS 4    LEFT HAND IMAGE                   00003741L
+     control        02575  PASS 4    JOB/CONTROL CARD OVERLAP          00003742L
+     control        02575  PASS 4    MAIN LINE OVERLAP                 00003743L
+     control        02575  PASS 4    PROCESS DA STATEMENTS             00003744L
+     control        02575  PASS 4    PROCESS LITERALS                  00003745L
+     control        00706  PASS 4    END OF JOB OVERLAP                00003746L
+     control        01925  PASS 5    INITIALIZE                        00003751L
+     control        00001  PASS 5    MAIN LINE                         00003752L
+     control        00001  PASS 6    MAIN LINE                         00003761L
+     control        00333  PASS 6    PRINT SYMBOLS                     00003762L
+     control        01900  PASS 7    INITIALIZATION 1                  00003771L
+     control        00400  PASS 7    INITIALIZATION 2                  00003772L
+     control        00201  PASS 7    MAIN LINE 1                       00003773L
+     control        02000  PASS 7    MAIN LINE 2                       00003774L
+     control        00794  PASS 7    EX/END OVERLAP                    00003775L
+     control        02000  PASS 8    MAINLINE 1                        00003781L
+     control        00001  PASS 8    MAIN LINE 2                       00003782L
+     control        00333  PASS 8    EXTRA OUTPUT OVERLAP              00003783L
+     control   1401 AUTOCODER GENERATED ON TAPE UNIT 1                 00003799L

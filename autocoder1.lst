@@ -1,0 +1,1523 @@
+ CLEAR STORAGE 1     ,008015,022026,030037,044,049,053053N000000N00001026                                         1
+ CLEAR STORAGE 2     L068116,105106,110117B101/I9I#071029C029056B026/B001/0991,001/001117I0?                      2
+ BOOTSTRAP           ,008015,022029,036040,047054,061068,072/061039              ,0010011040                      3
+0                          1401 AUTOCODER-PASS 1-GENERATE SYSTEM TAPE-VERSION 3       3711L               PAGE    1
+0 SEQ PG LIN  LABEL  OP    OPERANDS                                            SFX CT  LOCN  INSTRUCTION TYPE  CARD
+ 
+  101  1 01   000    JOB   1401 AUTOCODER-PASS 1-GENERATE SYSTEM TAPE-VERSION 3
+  102  1 02          CTL   630 1
+  103  1 03   SYSTP  EQU   %U1                                                         %U1
+  104  1 04   CARD   EQU   0                                                           0000
+  105  1 05   PRINT  EQU   200                                                         0200
+  106  1 06          ORG   87                                                                 0087
+  107  1 07   XR1    DCW   000                                                      3  0089                       4
+  108  1 08          DC    00                                                       2  0091                       4
+  109  1 09   XR2    DCW   000                                                      3  0094                       4
+  110  1 10          DC    00                                                       2  0096                       4
+  111  1 11   XR3    DCW   000                                                      3  0099                       4
+  112  1 12          DC    000000                                                   6  0105                       4
+  113  1 13   ZONE   DCW   @2SKB@                                                   4  0109                       4
+  114  1 14   ABIT   EQU   ZONE-2                                                      0107
+  115  1 15   NOBIT  EQU   ZONE-3                                                      0106
+  116  1 16   XXXX   EQU   0                                                           0000
+  117  1 17   *
+  118  1 18   * START OF MAIN LINE
+  119  1 19   *
+  120  1 20          ORG   333                                                                0333
+  121  1 21   START  RWD   SYSTP                                                    5  0333  U %U1 R              5
+  122  1 22          CC    1                                                        2  0338  F 1                  5
+  123  1 23          MCW   @GENERATING 1401 AUTOCODER SYSTEM@,PRINT&32              7  0340  M '83 232            5
+  124  1 24          W                                                              1  0347  2                    5
+  125  1 25          CC    1                                                        2  0348  F 1                  5
+  126  1 26          CS    PRINT&132                                                4  0350  / 332                5
+  127  1 27          CS                                                             1  0354  /                    5
+  128  1 28          MCW   CARD&75,SEQNO#4                                          7  0355  M 075 '87            6
+  129  1 29   *
+  130  1 30   * START UP NEXT BLOCK
+  131  1 31   *
+  132  1 32   NXTBK  R                                                              1  0362  1                    6
+  133  1 33          C     CARD&12,@CONTROL@                                        7  0363  C 012 '94            6
+  134  1 34          BU    MACRO                                                    5  0370  B 792 /              6
+  135  1 35          BWZ   CKSEQ,CARD&80,2   COMMENT OUT TO TURN OFF SEQ CHK        8  0375  V 726 080 2          6
+  136  1 36          BCE   EOJOB,CARD&78,9                                          8  0383  B 877 078 9          6
+  137  1 37          SW    CARD&21                                                  4  0391  , 021                7
+  138  1 38          ZA    CARD&25,HOLD5#5                                          7  0395  ? 025 '99            7
+  139  1 39          CW    CARD&21                                                  4  0402  ) 021                7
+  140  1 40   *
+  141  1 41   * FLOAT ADDRESS TO FIVE CHARACTERS
+  142  1 42   *
+  143  1 43   FLOAT  BCE   *&5,HOLD5,&                                              8  0406  B 418 '99 &          7
+  144  1 44          B     COMP1                                                    4  0414  B 429                7
+  145  1 45          ZA    HOLD5-1,HOLD5                                            7  0418  ? '98 '99            7
+  146  1 46          B     FLOAT                                                    4  0425  B 406                7
+  147  1 47   *
+1                          1401 AUTOCODER-PASS 1-GENERATE SYSTEM TAPE-VERSION 3       3711L               PAGE    2
+0 SEQ PG LIN  LABEL  OP    OPERANDS                                            SFX CT  LOCN  INSTRUCTION TYPE  CARD
+ 
+  148  1 48   * TEST ADDRESS AGAINST HOME ADDRESS
+  149  1 49   * TO DEVELOP INDEX VALUE
+  150  1 50   *
+  151  1 51   COMP1  MZ    NOBIT,HOLD5                                              7  0429  Y 106 '99            8
+  152  1 52          S     XR1&2                                                    4  0436  S 091                8
+  153  1 53          C     HOLD5,@01500@                                            7  0440  C '99 /04            8
+  154  1 54          BE    DOCOR                                                    5  0447  B 538 S              8
+  155  1 55          BH    SUB1                                                     5  0452  B 527 U              8
+  156  1 56          S     @01500@,HOLD5                                            7  0457  S /09 '99            8
+  157  1 57          MCW   @16000@,WORK5#5                                          7  0464  M /14 /19            9
+  158  1 58   SUB2   S     HOLD5,WORK5                                              7  0471  S '99 /19            9
+  159  1 59   *
+  160  1 60   * CONVERT INDEX VALUE TO 3 DIGIT MACHINE ADDRESS
+  161  1 61   *
+  162  1 62   CNVRT  BAV   *&1                                                      5  0478  B 483 Z              9
+  163  1 63          A     @96@,WORK5-3                                             7  0483  A /21 /16            9
+  164  1 64          BAV   CNVRT&5                                                  5  0490  B 483 Z              9
+  165  1 65          MZ    WORK5-4,WORK5                                            7  0495  Y /15 /19            9
+  166  1 66          MN    WORK5-3,*&4                                              7  0502  D /16 512           10
+  167  1 67          MZ    ZONE,WORK5-2                                             7  0509  Y 109 /17           10
+  168  1 68          MCW   WORK5,XR1                                                7  0516  M /19 089           10
+  169  1 69          B     DOCOR                                                    4  0523  B 538               10
+  170  1 70   SUB1   MCW   @01500@,WORK5                                            7  0527  M /26 /19           10
+  171  1 71          B     SUB2                                                     4  0534  B 471               10
+  172  1 72   *
+  173  1 73   * READ CONDENSED CARDS
+  174  1 74   *
+  175  1 75   DOCOR  R                                                              1  0538  1                   10
+  176  1 76          MCW   @045@,XR3                                                7  0539  M /29 099           11
+  177  1 77          MCW   @042@,XR2                                                7  0546  M /32 094           11
+  178  1 78          BWZ   CKSEQ,CARD&80,2   COMMENT OUT TO TURN OFF SEQ CHK        8  0553  V 726 080 2         11
+  179  1 79          BCE   WTAP1,CARD&68,B                                          8  0561  B 675 068 B         11
+  180  1 80          BCE   SETWM,CARD&40,N                                          8  0569  B 596 040 N         11
+  181  1 81          C     CARD&46,@001@                                            7  0577  C 046 /35           12
+  182  1 82          BE    SETWM                                                    5  0584  B 596 S             12
+  183  1 83          MZ    ABIT,CARD&45                                             7  0589  Y 107 045           12
+  184  1 84   *
+  185  1 85   * SET RETURN ADDRESS
+  186  1 86   *
+  187  1 87   SETWM  MCW   &DOCOR,CARD&71                                           7  0596  M /38 071           12
+  188  1 88          MCW   @B@                                                      4  0603  M /39               12
+  189  1 89   *
+  190  1 90   * INDEX WORD MARK ADDRESSES
+  191  1 91   *
+  192  1 92   COMP2  C     XR2,@063@                                                7  0607  C 094 /42           12
+  193  1 93          BE    CARD&40                                                  5  0614  B 040 S             13
+  194  1 94          A     &7,XR3                                                   7  0619  A /43 099           13
+  195  1 95          A     &7,XR2                                                   7  0626  A /43 094           13
+  196  1 96          C     CARD&1&X2,@040@                                          7  0633  C 0!1 /46           13
+  197  1 97          BE    *&8                                                      5  0640  B 652 S             13
+1                          1401 AUTOCODER-PASS 1-GENERATE SYSTEM TAPE-VERSION 3       3711L               PAGE    3
+0 SEQ PG LIN  LABEL  OP    OPERANDS                                            SFX CT  LOCN  INSTRUCTION TYPE  CARD
+ 
+  198  1 98          MZ    ABIT,CARD&X2                                             7  0645  Y 107 0!0           13
+  199  1 99          C     CARD&1&X3,@040@                                          7  0652  C 0?1 /46           14
+  200  2 00          BE    COMP2                                                    5  0659  B 607 S             14
+  201  2 01          MZ    ABIT,CARD&X3                                             7  0664  Y 107 0?0           14
+  202  2 02          B     COMP2                                                    4  0671  B 607               14
+  203  2 03   *
+  204  2 04   * WRITE CORE ON TAPE
+  205  2 05   *
+  206  2 06   WTAP1  LCA   @}@,3998                                                 7  0675  L /47 I98           14
+  207  2 07          WTW   SYSTP,1500                                               8  0682  L %U1 V00 W         14
+  208  2 08          BER   WTERR                                                    5  0690  B 973 L             15
+  209  2 09   *
+  210  2 10   * CLEAR INPUT AREA
+  211  2 11   *
+  212  2 12          MCW   @I99@,CLEAR&3                                            7  0695  M /50 705           15
+  213  2 13   CLEAR  CS    XXXX                                                     4  0702  / 000               15
+  214  2 14          SBR   CLEAR&3                                                  4  0706  H 705               15
+  215  2 15          C     CLEAR&3,@U99@                                            7  0710  C 705 /53           15
+  216  2 16          BU    CLEAR                                                    5  0717  B 702 /             15
+  217  2 17          B     NXTBK                                                    4  0722  B 362               15
+  218  2 18   *
+  219  2 19   * CHECK CARD SEQUENCE
+  220  2 20   *
+  221  2 21   CKSEQ  SBR   SEQXT&3                                                  4  0726  H 759               16
+  222  2 22          A     &1,SEQNO                                                 7  0730  A /54 '87           16
+  223  2 23          C     CARD&75,SEQNO                                            7  0737  C 075 '87           16
+  224  2 24          MCW   CARD&75,SEQNO                                            7  0744  M 075 '87           16
+  225  2 25          BU    SEQER                                                    5  0751  B 760 /             16
+  226  2 26   SEQXT  B     XXXX                                                     4  0756  B 000               16
+  227  2 27   *
+  228  2 28   * CARD SEQUENCE ERROR
+  229  2 29   *
+  230  2 30   SEQER  MCW   CARD&80,PRINT&80                                         7  0760  M 080 280           17
+  231  2 31          CHAIN 6                                                                             MACRO
+  232                MCW                                                            1  0767  M           GEN     17
+  233                MCW                                                            1  0768  M           GEN     17
+  234                MCW                                                            1  0769  M           GEN     17
+  235                MCW                                                            1  0770  M           GEN     17
+  236                MCW                                                            1  0771  M           GEN     17
+  237                MCW                                                            1  0772  M           GEN     17
+  238  2 32          MCW   @SEQUENCE ERROR@,PRINT&98                                7  0773  M /68 298           18
+  239  2 33          W                                                              1  0780  2                   18
+  240  2 34          H     0,176                                                    7  0781  . 000 176           18
+  241  2 35          B     DOSEQ                                                    4  0788  B 941               18
+  242  2 36   *
+  243  2 37   * PROCESS MACRO LIBRARY
+  244  2 38   *
+  245  2 39   MACRO  NOP   CRDER                                                    4  0792  N 917               18
+  246  2 40          C     CARD&20,@HEADR@                                          7  0796  C 020 /73           18
+  247  2 41          BU    CRDER                                                    5  0803  B 917 /             18
+1                          1401 AUTOCODER-PASS 1-GENERATE SYSTEM TAPE-VERSION 3       3711L               PAGE    4
+0 SEQ PG LIN  LABEL  OP    OPERANDS                                            SFX CT  LOCN  INSTRUCTION TYPE  CARD
+ 
+  248  2 42          BWZ   CKSEQ,CARD&80,2  COMMENT OUT TO TURN OF SEQ CHK          8  0808  V 726 080 2         19
+  249  2 43          MCW   @B@,MACRO                                                7  0816  M /39 792           19
+  250  2 44          LCA   @}@,81                                                   7  0823  L /47 081           19
+  251  2 45   *
+  252  2 46   * WRITE SKELETON INSTRUCTIONS ON TAPE
+  253  2 47   *
+  254  2 48   WTAP2  WT    SYSTP,CARD&1                                             8  0830  M %U1 001 W         19
+  255  2 49          BER   WTERR                                                    5  0838  B 973 L             19
+  256  2 50          C     CARD&11,@999999@                                         7  0843  C 011 /79           20
+  257  2 51          BE    WTTM                                                     5  0850  B 868 S             20
+  258  2 52          R                                                              1  0855  1                   20
+  259  2 53          BWZ   CKSEQ,CARD&80,2  COMMENT OUT TO TURN OF SEQ CHK          8  0856  V 726 080 2         20
+  260  2 54          B     WTAP2                                                    4  0864  B 830               20
+  261  2 55   WTTM   WTM   SYSTP                                                    5  0868  U %U1 M             20
+  262  2 56          B     NXTBK                                                    4  0873  B 362               20
+  263  2 57   *
+  264  2 58   * END OF GENERATION
+  265  2 59   *
+  266  2 60   EOJOB  WTM   SYSTP                                                    5  0877  U %U1 M             21
+  267  2 61          RWD   SYSTP                                                    5  0882  U %U1 R             21
+  268  2 62          CW    @}@                                                      4  0887  ) /47               21
+  269  2 63          CS    PRINT&132                                                4  0891  / 332               21
+  270  2 64          CS                                                             1  0895  /                   21
+  271  2 65          MCW   @1401 AUTOCODER SYSTEM GENERATED ON TAPE UNIT 1@,246     7  0896  M S25 246           21
+  272  2 66          W                                                              1  0903  2                   21
+  273  2 67          CC    1                                                        2  0904  F 1                 22
+  274  2 68   *
+  275  2 69   * FINAL HALT
+  276  2 70   *
+  277  2 71   HALT   H     0,142                                                    7  0906  . 000 142           22
+  278  2 72          B     HALT                                                     4  0913  B 906               22
+  279  2 73   *
+  280  2 74   * MISSING CONTROL CARD
+  281  2 75   *
+  282  2 76   CRDER  CS    PRINT&132                                                4  0917  / 332               22
+  283  2 77          CS                                                             1  0921  /                   22
+  284  2 78          MCW   @SYSTEM CONTROL CARD MISSING@,PRINT&27                   7  0922  M S52 227           22
+  285  2 79          W                                                              1  0929  2                   22
+  286  2 80   HALT2  H     0,177                                                    7  0930  . 000 177           23
+  287  2 81          B     HALT2                                                    4  0937  B 930               23
+  288  2 82   *
+  289  2 83   * AFTER SEQUENCE ERROR, CHECK BALANCE OF DECK
+  290  2 84   *
+  291  2 85   DOSEQ  R                                                              1  0941  1                   23
+  292  2 86          BWZ   CKSEQ,CARD&80,2                                          8  0942  V 726 080 2         23
+  293  2 87          BCE   ENDSQ,CARD&78,9                                          8  0950  B 962 078 9         23
+  294  2 88          B     DOSEQ                                                    4  0958  B 941               23
+  295  2 89   ENDSQ  H     0,152                                                    7  0962  . 000 152           23
+  296  2 90          B     ENDSQ                                                    4  0969  B 962               24
+  297  2 91   *
+1                          1401 AUTOCODER-PASS 1-GENERATE SYSTEM TAPE-VERSION 3       3711L               PAGE    5
+0 SEQ PG LIN  LABEL  OP    OPERANDS                                            SFX CT  LOCN  INSTRUCTION TYPE  CARD
+ 
+  298  2 92   * WRITE REDUNDANCY ROUTINE
+  299  2 93   *
+  300  2 94   WTERR  SBR   WTXT&3                                                   4  0973  H '36               24
+  301  2 95          SBR   XR3                                                      4  0977  H 099               24
+  302  2 96          MZ    &9,XR3                                                   7  0981  Y S53 099           24
+  303  2 97          MCW   4000-6&X3,RETRY&7                                        7  0988  M II4 '27           24
+  304  2 98   BSP    BSP   SYSTP                                                    5  0995  U %U1 B             24
+  305  2 99          SKP   SYSTP                                                    5  1000  U %U1 E             24
+  306  3 00          BCE   SUBCT,WTCT-1,1                                           8  1005  B '37 S54 1         25
+  307  3 01          A     &1,WTCT#2                                                7  1013  A /54 S55           25
+  308  3 02   RETRY  WT    SYSTP,XXXX                                               8  1020  M %U1 000 W         25
+  309  3 03          BER   BSP                                                      5  1028  B 995 L             25
+  310  3 04   WTXT   B     XXXX                                                     4  1033  B 000               25
+  311  3 05   SUBCT  S     WTCT                                                     4  1037  S S55               25
+  312  3 06          H     0,161                                                    7  1041  . 000 161           26
+  313  3 07          B     RETRY                                                    4  1048  B '20               26
+                     DCW   @GENERATING 1401 AUTOCODER SYSTEM@                      32  1083              LIT     27
+              SEQNO  DCW   #04                                                      4  1087              AREA    27
+                     DCW   @CONTROL@                                                7  1094              LIT     28
+              HOLD5  DCW   #05                                                      5  1099              AREA    28
+                     DCW   @01500@                                                  5  1104              LIT     28
+                     DCW   @01500@                                                  5  1109              LIT     28
+                     DCW   @16000@                                                  5  1114              LIT     28
+              WORK5  DCW   #05                                                      5  1119              AREA    28
+                     DCW   @96@                                                     2  1121              LIT     28
+                     DCW   @01500@                                                  5  1126              LIT     29
+                     DCW   @045@                                                    3  1129              LIT     29
+                     DCW   @042@                                                    3  1132              LIT     29
+                     DCW   @001@                                                    3  1135              LIT     29
+                     DCW   &DOCOR                                                   3  1138  538         ADCON   29
+                     DCW   @B@                                                      1  1139              LIT     29
+                     DCW   @063@                                                    3  1142              LIT     29
+                     DCW   &7                                                       1  1143              LIT     30
+                     DCW   @040@                                                    3  1146              LIT     30
+                     DCW   @}@                                                      1  1147              LIT     30
+                     DCW   @I99@                                                    3  1150              LIT     30
+                     DCW   @U99@                                                    3  1153              LIT     30
+                     DCW   &1                                                       1  1154              LIT     30
+                     DCW   @SEQUENCE ERROR@                                        14  1168              LIT     30
+                     DCW   @HEADR@                                                  5  1173              LIT     31
+                     DCW   @999999@                                                 6  1179              LIT     31
+                     DCW   @1401 AUTOCODER SYSTEM GENERATED ON TAPE UNIT 1@        46  1225              LIT     33
+                     DCW   @SYSTEM CONTROL CARD MISSING@                           27  1252              LIT     33
+                     DCW   &9                                                       1  1253              LIT     33
+              WTCT   DCW   #02                                                      2  1255              AREA    33
+  314  3 08          EX    START                                                             B 333               34
+1                          AUTOCODER-PASS 1 SELECT PROGRAM           -VERSION 3       3712L               PAGE    6
+0 SEQ PG LIN  LABEL  OP    OPERANDS                                            SFX CT  LOCN  INSTRUCTION TYPE  CARD
+ 
+  315  3 09          JOB   AUTOCODER-PASS 1 SELECT PROGRAM           -VERSION 3
+  316  3 10          SFX   B                                                    B
+  317  3 11   PASSA  EQU   1650                                                 B      1650
+  318  3 12   DOPSA  EQU   1900                                                 B      1900
+  319  3 13   SYSTP  EQU   %U1                                                  B      %U1
+  320  3 14   *
+  321  3 15   * BRANCH FROM TAPE LOAD ROUTINE
+  322  3 16   *
+  323  3 17          ORG   1                                                    B             0001
+  324  3 18          B     333                                                  B   4  0001  B 333               37  ADDR
+  325  3 19          H     *-3                                                  B   4  0005  . 005               37  ADDR
+  326  3 20   LOADD  DCW   @599@                                                B   3  0011                      37  ADDR
+  327  3 21          ORG   87                                                   B             0087
+  328  3 22   XR1    DCW   000                                                  B   3  0089                      38
+  329  3 23          DC    00                                                   B   2  0091                      38
+  330  3 24          DCW   000                                                  B   3  0094                      38
+  331  3 25          DC    00                                                   B   2  0096                      38
+  332  3 26          DCW   000                                                  B   3  0099                      38
+  333  3 27          DC    00                                                   B   2  0101                      38
+  334  3 28   *
+  335  3 29   * BEGIN PROGRAM
+  336  3 30   *
+  337  3 31          ORG   333                                                  B             0333
+  338  3 32          BER   HALT1                                                B   5  0333  B 407 L             39
+  339  3 33          SW    GMRK1                                                B   4  0338  , 835               39
+  340  3 34   CLEAR  CS    3999                                                 B   4  0342  / I99               39
+  341  3 35          SBR   CLEAR&3                                              B   4  0346  H 345               39
+  342  3 36          C     CLEAR&3,@U99@                                        B   7  0350  C 345 787           39
+  343  3 37          BU    CLEAR                                                B   5  0357  B 342 /             39
+  344  3 38   *
+  345  3 39   * GET PAST LIBRARY
+  346  3 40   *
+  347  3 41   LOOP1  SW    GMRK1                                                B   4  0362  , 835               39
+  348  3 42          RT    SYSTP,GMRK1-21                                       B   8  0366  M %U1 814 R         40
+  349  3 43          C     GMRK1-2,@999999    HEADR@                            B   7  0374  C 833 802           40
+  350  3 44          BU    LOOP1                                                B   5  0381  B 362 /             40
+  351  3 45          SW    GMRK1                                                B   4  0386  , 835               40
+  352  3 46          RT    SYSTP,GMRK1-1                                        B   8  0390  M %U1 834 R         40
+  353  3 47          BEF   TSTSS                                                B   5  0398  B 418 K             40
+  354  3 48          B     LOOP1                                                B   4  0403  B 362               41
+  355  3 49   *
+  356  3 50   * REDUNDANCY ON TAPE LOAD
+  357  3 51   *
+  358  3 52   HALT1  H     0,199                                                B   7  0407  . 000 199           41
+  359  3 53          B     HALT1                                                B   4  0414  B 407               41
+  360  3 54   TSTSS  BSS   LIBRN,F                                              B   5  0418  B 521 F             41
+  361  3 55   *
+  362  3 56   * RETRIEVE PASS 2 FOR ASSEMBLY RUN
+  363  3 57   *
+  364  3 58          SW    GMRK1                                                B   4  0423  , 835               41
+1                          AUTOCODER-PASS 1 SELECT PROGRAM           -VERSION 3       3712L               PAGE    7
+0 SEQ PG LIN  LABEL  OP    OPERANDS                                            SFX CT  LOCN  INSTRUCTION TYPE  CARD
+ 
+  365  3 59          LCA   GMRK1,3998                                           B   7  0427  L 835 I98           41
+  366  3 60          MCW   &PASSA&13,NOIS2&6                                    B   7  0434  M 805 658           41
+  367  3 61   *
+  368  3 62   * GET PAST LIBRARIAN
+  369  3 63   *
+  370  3 64   LOOP2  BCE   LOPSA,BYCT,4                                         B   8  0441  B 476 807 4         42
+  371  3 65          SW    3998                                                 B   4  0449  , I98               42
+  372  3 66          RTW   SYSTP,PASSA                                          B   8  0453  L %U1 W50 R         42
+  373  3 67          B     NOISE                                                B   4  0461  B 637               42
+  374  3 68          A     &1,BYCT#1                                            B   7  0465  A 806 807           42
+  375  3 69          B     LOOP2                                                B   4  0472  B 441               42
+  376  3 70   *
+  377  3 71   * PASS 2 FOUND
+  378  3 72   *
+  379  3 73   LOPSA  RTW   SYSTP,PASSA                                          B   8  0476  L %U1 W50 R         43
+  380  3 74          B     NOISE                                                B   4  0484  B 637               43
+  381  3 75          BER   RDERR                                                B   5  0488  B 676 L             43
+  382  3 76          CW    GMRK1                                                B   4  0493  ) 835               43
+  383  3 77   CLR    CS    PASSA-1                                              B   4  0497  / W49               43
+  384  3 78          SBR   CLR&3                                                B   4  0501  H 500               43
+  385  3 79          C     CLR&3,LOADD                                          B   7  0505  C 500 011           43
+  386  3 80          BU    CLR                                                  B   5  0512  B 497 /             44
+  387  3 81          B     DOPSA                                                B   4  0517  B Z00               44
+  388  3 82   *
+  389  3 83   * LIBRARY RUN
+  390  3 84   *
+  391  3 85   LIBRN  MCW   @!13@,NOIS2&6                                        B   7  0521  M 810 658           44
+  392  3 86          CW    GMRK1                                                B   4  0528  ) 835               44
+  393  3 87          BSS   OUTPT,B                                              B   5  0532  B 558 B             44
+  394  3 88   *
+  395  3 89   * RETRIEVE UPDATE PROGRAM
+  396  3 90   *
+  397  3 91          RTW   SYSTP,2000                                           B   8  0537  L %U1 !00 R         44
+  398  3 92          B     NOISE                                                B   4  0545  B 637               44
+  399  3 93          BER   RDERR                                                B   5  0549  B 676 L             45
+  400  3 94          B     2000                                                 B   4  0554  B !00               45
+  401  3 95   *
+  402  3 96   * RETRIEVE OUTPUT PROGRAM
+  403  3 97   *
+  404  3 98   OUTPT  RTW   SYSTP,2000                                           B   8  0558  L %U1 !00 R         45
+  405  3 99          B     NOISE                                                B   4  0566  B 637               45
+  406  4 00          SW    GMRK1                                                B   4  0570  , 835               45
+  407  4 01          LCA   GMRK1,3998                                           B   7  0574  L 835 I98           45
+  408  4 02          RTW   SYSTP,2000                                           B   8  0581  L %U1 !00 R         46
+  409  4 03          B     NOISE                                                B   4  0589  B 637               46
+  410  4 04          RTW   SYSTP,2000                                           B   8  0593  L %U1 !00 R         46
+  411  4 05          B     NOISE                                                B   4  0601  B 637               46
+  412  4 06          SW    3998                                                 B   4  0605  , I98               46
+  413  4 07          RTW   SYSTP,2000                                           B   8  0609  L %U1 !00 R         46
+  414  4 08          B     NOISE                                                B   4  0617  B 637               47
+1                          AUTOCODER-PASS 1 SELECT PROGRAM           -VERSION 3       3712L               PAGE    8
+0 SEQ PG LIN  LABEL  OP    OPERANDS                                            SFX CT  LOCN  INSTRUCTION TYPE  CARD
+ 
+  415  4 09          BER   RDERR                                                B   5  0621  B 676 L             47
+  416  4 10          CW    GMRK1,3998                                           B   7  0626  ) 835 I98           47
+  417  4 11          B     2000                                                 B   4  0633  B !00               47
+  418  4 12   *
+  419  4 13   * TEST FOR NOISE RECORDS
+  420  4 14   *
+  421  4 15   NOISE  SBR   NOSXT&3                                              B   4  0637  H 675               47
+  422  4 16          SBR   XR1                                                  B   4  0641  H 089               47
+  423  4 17          MZ    &9,XR1                                               B   7  0645  Y 811 089           47
+  424  4 18   NOIS2  BCE   4000-12&X1,0,}                                       B   8  0652  B IY8 000 } GMARK   48
+  425  4 19          CHAIN 12                                                   B                        MACRO
+  426                BCE                                                        B   1  0660  B           GEN     48
+  427                BCE                                                        B   1  0661  B           GEN     48
+  428                BCE                                                        B   1  0662  B           GEN     48
+  429                BCE                                                        B   1  0663  B           GEN     48
+  430                BCE                                                        B   1  0664  B           GEN     48
+  431                BCE                                                        B   1  0665  B           GEN     48
+  432                BCE                                                        B   1  0666  B           GEN     49
+  433                BCE                                                        B   1  0667  B           GEN     49
+  434                BCE                                                        B   1  0668  B           GEN     49
+  435                BCE                                                        B   1  0669  B           GEN     49
+  436                BCE                                                        B   1  0670  B           GEN     49
+  437                BCE                                                        B   1  0671  B           GEN     49
+  438  4 20   NOSXT  B     0                                                    B   4  0672  B 000               49
+  439  4 21   *
+  440  4 22   * READ REDUNDANCY ROUTINE
+  441  4 23   *
+  442  4 24   RDERR  SBR   XR1                                                  B   4  0676  H 089               50
+  443  4 25          SBR   RDXT&3                                               B   4  0680  H 726               50
+  444  4 26          MZ    &9,XR1                                               B   7  0684  Y 811 089           50
+  445  4 27          MCW   4000-10&X1,RDTRY&7                                   B   7  0691  M IZ0 717           50
+  446  4 28   BSP    BSP   SYSTP                                                B   5  0698  U %U1 B             50
+  447  4 29          MCW   &9,RDCT#1                                            B   7  0703  M 811 812           50
+  448  4 30   RDTRY  RTW   SYSTP,0                                              B   8  0710  L %U1 000 R         51
+  449  4 31          BER   *&5                                                  B   5  0718  B 727 L             51
+  450  4 32   RDXT   B     0                                                    B   4  0723  B 000               51
+  451  4 33          BSP   SYSTP                                                B   5  0727  U %U1 B             51
+  452  4 34          S     &1,RDCT                                              B   7  0732  S 806 812           51
+  453  4 35          BWZ   RDTRY,RDCT,B                                         B   8  0739  V 710 812 B         51
+  454  4 36          H     0,191                                                B   7  0747  . 000 191           52
+  455  4 37          MCW   RDTRY&7,*&8                                          B   7  0754  M 717 768           52
+  456  4 38          RTW   SYSTP,0                                              B   8  0761  L %U1 000 R         52
+  457  4 39          BSS   BSP,E                                                B   5  0769  B 698 E             52
+  458  4 40          H     0,111                                                B   7  0774  . 000 111           52
+  459  4 41          B     RDXT                                                 B   4  0781  B 723               52
+  460  4 42          LTORG *                                                    B             0785
+                     DCW   @U99@                                                B   3  0787              LIT     53
+                     DCW   @999999    HEADR@                                    B  15  0802              LIT     53
+                     DCW   &PASSAB&13                                           B   3  0805  W63         ADCON   53
+                     DCW   &1                                                   B   1  0806              LIT     53
+1                          AUTOCODER-PASS 1 SELECT PROGRAM           -VERSION 3       3712L               PAGE    9
+0 SEQ PG LIN  LABEL  OP    OPERANDS                                            SFX CT  LOCN  INSTRUCTION TYPE  CARD
+ 
+              BYCTB  DCW   #01                                                  B   1  0807              AREA    53
+                     DCW   @!13@                                                B   3  0810              LIT     53
+                     DCW   &9                                                   B   1  0811              LIT     53
+              RDCTB  DCW   #01                                                  B   1  0812              AREA    54
+  461  4 43          DCW   #22                                                  B  22  0834                      54
+  462  4 44   GMRK1  DCW   @}@                                                  B   1  0835              GMARK   54
+  463  4 45          EX    0                                                    B            B 000               55
+1                          AUTOCODER-PASS 1 RETRIEVE UPDATE          -VERSION 3       3713L               PAGE   10
+0 SEQ PG LIN  LABEL  OP    OPERANDS                                            SFX CT  LOCN  INSTRUCTION TYPE  CARD
+ 
+  464  4 46          JOB   AUTOCODER-PASS 1 RETRIEVE UPDATE          -VERSION 3 B
+  465  4 47          SFX   R                                                    R
+  466  4 48   SYSTP  EQU   %U1                                                  R      %U1
+  467  4 49   LTAPSW EQU   2725                                                 R      2725
+  468  4 50          ORG   2000                                                 R             2000
+  469  4 51          BSS   LIST,G                                               R   5  2000  B J26 G             58
+  470  4 52          CW    ENDRT                                                R   4  2005  ) K12               58
+  471  4 53   START  RTW   SYSTP,1                                              R   8  2009  L %U1 001 R         58
+  472  4 54          BCE   START,013,}                                          R   8  2017  B !09 013 } GMARK   58
+  473  4 55          CHAIN 12                                                   R                        MACRO
+  474                BCE                                                        R   1  2025  B           GEN     58
+  475                BCE                                                        R   1  2026  B           GEN     58
+  476                BCE                                                        R   1  2027  B           GEN     58
+  477                BCE                                                        R   1  2028  B           GEN     59
+  478                BCE                                                        R   1  2029  B           GEN     59
+  479                BCE                                                        R   1  2030  B           GEN     59
+  480                BCE                                                        R   1  2031  B           GEN     59
+  481                BCE                                                        R   1  2032  B           GEN     59
+  482                BCE                                                        R   1  2033  B           GEN     59
+  483                BCE                                                        R   1  2034  B           GEN     59
+  484                BCE                                                        R   1  2035  B           GEN     60
+  485                BCE                                                        R   1  2036  B           GEN     60
+  486  4 56          BER   RDERR                                                R   5  2037  B !46 L             60
+  487  4 57          B     333                                                  R   4  2042  B 333               60
+  488  4 58   RDERR  BSP   SYSTP                                                R   5  2046  U %U1 B             60
+  489  4 59          MCW   &9,RDCT#1                                            R   7  2051  M K06 K07           60
+  490  4 60   RDTRY  RTW   SYSTP,1                                              R   8  2058  L %U1 001 R         60
+  491  4 61          BER   *&5                                                  R   5  2066  B !75 L             61
+  492  4 62          B     333                                                  R   4  2071  B 333               61
+  493  4 63          BSP   SYSTP                                                R   5  2075  U %U1 B             61
+  494  4 64          S     &1,RDCT                                              R   7  2080  S K08 K07           61
+  495  4 65          BWZ   RDTRY,RDCT,B                                         R   8  2087  V !58 K07 B         61
+  496  4 66          H     0,191                                                R   7  2095  . 000 191           61
+  497  4 67   AGAIN  RTW   SYSTP,1                                              R   8  2102  L %U1 001 R         62
+  498  4 68          BSS   RDERR,E                                              R   5  2110  B !46 E             62
+  499  4 69          H     0,111                                                R   7  2115  . 000 111           62
+  500  4 70          B     333                                                  R   4  2122  B 333               62
+  501  4 71   LIST   SW    ENDRT                                                R   4  2126  , K12               62
+  502  4 72          LCA   ENDRT,1998                                           R   7  2130  L K12 Z98           62
+  503  4 73          RTW   SYSTP,333                                            R   8  2137  L %U1 333 R         63
+  504  4 74          BEF   GET                                                  R   5  2145  B J54 K             63
+  505  4 75          B     LIST                                                 R   4  2150  B J26               63
+  506  4 76   GET    BSP   SYSTP                                                R   5  2154  U %U1 B             63
+  507  4 77          BSP   SYSTP                                                R   5  2159  U %U1 B             63
+  508  4 78          CW    ENDRT,1998                                           R   7  2164  ) K12 Z98           63
+  509  4 79          SW    LTAPSW                                               R   4  2171  , P25               63
+  510  4 80          MCW   @333@,RDTRY&6                                        R   7  2175  M K11 !64           64
+  511  4 81          MCW   @333@,AGAIN&6                                        R   7  2182  M K11 J08           64
+  512  4 82          RTW   SYSTP,333                                            R   8  2189  L %U1 333 R         64
+  513  4 83          BER   RDERR                                                R   5  2197  B !46 L             64
+1                          AUTOCODER-PASS 1 RETRIEVE UPDATE          -VERSION 3       3713L               PAGE   11
+0 SEQ PG LIN  LABEL  OP    OPERANDS                                            SFX CT  LOCN  INSTRUCTION TYPE  CARD
+ 
+  514  4 84          B     333                                                  R   4  2202  B 333               64
+  515  4 85          LTORG *                                                    R             2206
+                     DCW   &9                                                   R   1  2206              LIT     64
+              RDCTR  DCW   #01                                                  R   1  2207              AREA    64
+                     DCW   &1                                                   R   1  2208              LIT     65
+                     DCW   @333@                                                R   3  2211              LIT     65
+  516  4 86   ENDRT  DCW   @}@                                                  R   1  2212              GMARK   65
+  517  4 87          EX    0                                                    R            B 000               66
+1                          AUTOCODER-PASS 1 COPY SYSTEM TAPE         -VERSION 3       3714L               PAGE   12
+0 SEQ PG LIN  LABEL  OP    OPERANDS                                            SFX CT  LOCN  INSTRUCTION TYPE  CARD
+ 
+  518  4 88          JOB   AUTOCODER-PASS 1 COPY SYSTEM TAPE         -VERSION 3 R
+  519  4 89          SFX   U                                                    U
+  520  4 90          ORG   87                                                   U             0087
+  521  4 91   XR1    DCW   000                                                  U   3  0089                      69
+  522  4 92          DC    00                                                   U   2  0091                      69
+  523  4 93   XR2    DCW   000                                                  U   3  0094                      69
+  524  4 94          DC    00                                                   U   2  0096                      69
+  525  4 95   XR3    DCW   000                                                  U   3  0099                      69
+  526  4 96          DC    00                                                   U   2  0101                      69
+  527  4 97   SYSTP  EQU   %U1                                                  U      %U1
+  528  4 98   OUTAP  EQU   %U6                                                  U      %U6
+  529  4 99   INPUT  EQU   1500                                                 U      1500
+  530  5 00   *
+  531  5 01   * BEGIN PROGRAM
+  532  5 02   *
+  533  5 03          ORG   333                                                  U             0333
+  534  5 04          SW    ENDUP                                                U   4  0333  , /39               70
+  535  5 05          RWD   SYSTP                                                U   5  0337  U %U1 R             70
+  536  5 06          RWD   OUTAP                                                U   5  0342  U %U6 R             70
+  537  5 07          CC    1                                                    U   2  0347  F 1                 70
+  538  5 08          CS    332                                                  U   4  0349  / 332               70
+  539  5 09          CS                                                         U   1  0353  /                   70
+  540  5 10          B     CLEAR                                                U   4  0354  B '21               70
+  541  5 11          BSS   COPY,C                                               U   5  0358  B 525 C             71
+  542  5 12   *
+  543  5 13   * RETRIEVE UPDATE PROGRAM
+  544  5 14   *
+  545  5 15          RTW   SYSTP,INPUT                                          U   8  0363  L %U1 V00 R         71
+  546  5 16          SBR   XR1                                                  U   4  0371  H 089               71
+  547  5 17          MN    0&X1                                                 U   4  0375  D 0'0               71
+  548  5 18          SW                                                         U   1  0379  ,                   71
+  549  5 19          DCW   @N0000@                                              U   5  0384                      71
+  550  5 20          B     NOISE                                                U   4  0385  B 759               71
+  551  5 21          BER   RDERR                                                U   5  0389  B 798 L             72
+  552  5 22          WTW   OUTAP,INPUT                                          U   8  0394  L %U6 V00 W         72
+  553  5 23          BER   WTERR                                                U   5  0402  B 928 L             72
+  554  5 24          B     CLEAR                                                U   4  0407  B '21               72
+  555  5 25   BYPSS  RTW   SYSTP,INPUT                                          U   8  0411  L %U1 V00 R         72
+  556  5 26          C     INPUT&19,@999999    HEADR@                           U   7  0419  C V19 '70           72
+  557  5 27          BU    BYPSS                                                U   5  0426  B 411 /             73
+  558  5 28          RTW   SYSTP,INPUT                                          U   8  0431  L %U1 V00 R         73
+  559  5 29          BEF   GETUP                                                U   5  0439  B 448 K             73
+  560  5 30          B     BYPSS                                                U   4  0444  B 411               73
+  561  5 31   GETUP  BCE   LDUPD,BYCT,3                                         U   8  0448  B 498 '72 3         73
+  562  5 32          RTW   SYSTP,INPUT                                          U   8  0456  L %U1 V00 R         73
+  563  5 33          DCW   @N0000000000000@                                     U  14  0477                      74
+  564  5 34          B     NOISE                                                U   4  0478  B 759               74
+  565  5 35          BER   RDERR                                                U   5  0482  B 798 L             74
+  566  5 36          A     &1,BYCT#1                                            U   7  0487  A '71 '72           74
+  567  5 37          B     GETUP                                                U   4  0494  B 448               74
+1                          AUTOCODER-PASS 1 COPY SYSTEM TAPE         -VERSION 3       3714L               PAGE   13
+0 SEQ PG LIN  LABEL  OP    OPERANDS                                            SFX CT  LOCN  INSTRUCTION TYPE  CARD
+ 
+  568  5 38   LDUPD  CS    199                                                  U   4  0498  / 199               74
+  569  5 39          CS    80                                                   U   4  0502  / 080               75
+  570  5 40          SW    6,16                                                 U   7  0506  , 006 016           75
+  571  5 41          SW    21                                                   U   4  0513  , 021               75
+  572  5 42          B     HEAD                                                 U   4  0517  B N32               75
+  573  5 43          B     BEGIN                                                U   4  0521  B V00               75
+  574  5 44   *
+  575  5 45   * COPY SYSTEM
+  576  5 46   *
+  577  5 47   COPY   RTW   SYSTP,INPUT                                          U   8  0525  L %U1 V00 R         75
+  578  5 48          SBR   XR1                                                  U   4  0533  H 089               75
+  579  5 49          MN    0&X1                                                 U   4  0537  D 0'0               76
+  580  5 50          SW                                                         U   1  0541  ,                   76
+  581  5 51          BEF   EOF                                                  U   5  0542  B 601 K             76
+  582  5 52          B     NOISE                                                U   4  0547  B 759               76
+  583  5 53          BER   RDERR                                                U   5  0551  B 798 L             76
+  584  5 54   *
+  585  5 55   * TEST END OF LIBRARY
+  586  5 56   *
+  587  5 57   SWICH  NOP   WTAP1                                                U   4  0556  N 580               76
+  588  5 58          SW    LIBSW                                                U   4  0560  , '79               76
+  589  5 59          C     INPUT&10,@999999@                                    U   7  0564  C V10 '78           77
+  590  5 60          BU    WTAP1                                                U   5  0571  B 580 /             77
+  591  5 61          CW    LIBSW#1                                              U   4  0576  ) '79               77
+  592  5 62   *
+  593  5 63   * WRITE TAPE
+  594  5 64   *
+  595  5 65   WTAP1  WTW   OUTAP,INPUT                                          U   8  0580  L %U6 V00 W         77
+  596  5 66          BER   WTERR                                                U   5  0588  B 928 L             77
+  597  5 67   *
+  598  5 68   * DO NEXT BLOCK
+  599  5 69   *
+  600  5 70   REOUT  B     CLEAR                                                U   4  0593  B '21               77
+  601  5 71          B     COPY                                                 U   4  0597  B 525               77
+  602  5 72   *
+  603  5 73   * END OF FILE
+  604  5 74   *
+  605  5 75   EOF    WTM   OUTAP                                                U   5  0601  U %U6 M             78
+  606  5 76          BW    ISMOR,EOFSW#1                                        U   8  0606  V 727 '80 1         78
+  607  5 77          B     CLEAR                                                U   4  0614  B '21               78
+  608  5 78          LCA   ENDUP,3998                                           U   7  0618  L /39 I98           78
+  609  5 79          BW    ERASE,UPDSW                                          U   8  0625  V 637 /26 1         78
+  610  5 80          B     HALT1                                                U   4  0633  B 669               78
+  611  5 81   *
+  612  5 82   * ERASE TAPE
+  613  5 83   *
+  614  5 84   ERASE  SKP   OUTAP                                                U   5  0637  U %U6 E             79
+  615  5 85          WT    OUTAP,INPUT                                          U   8  0642  M %U6 V00 W         79
+  616  5 86          BCE   HALT1,SKPCT-1,2                                      U   8  0650  B 669 '81 2         79
+  617  5 87          A     &1,SKPCT#2                                           U   7  0658  A '71 '82           79
+1                          AUTOCODER-PASS 1 COPY SYSTEM TAPE         -VERSION 3       3714L               PAGE   14
+0 SEQ PG LIN  LABEL  OP    OPERANDS                                            SFX CT  LOCN  INSTRUCTION TYPE  CARD
+ 
+  618  5 88          B     ERASE                                                U   4  0665  B 637               79
+  619  5 89   *
+  620  5 90   * END OF COPY RUN
+  621  5 91   *
+  622  5 92   HALT1  MCW   @1401 AUTOCODER SYSTEM COPIED ON TAPE UNIT 6@,243    U   7  0669  M /25 243           79
+  623  5 93          W                                                          U   1  0676  2                   80
+  624  5 94          CC    1                                                    U   2  0677  F 1                 80
+  625  5 95          BW    CPYND,UPDSW#1                                        U   8  0679  V 692 /26 1         80
+  626  5 96          RWD   OUTAP                                                U   5  0687  U %U6 R             80
+  627  5 97   CPYND  RWD   SYSTP                                                U   5  0692  U %U1 R             80
+  628  5 98          H     0,122                                                U   7  0697  . 000 122           80
+  629  5 99          B     CLEAR                                                U   4  0704  B '21               80
+  630  6 00          S     SKPCT                                                U   4  0708  S '82               81
+  631  6 01          MCW   @N@,SWICH                                            U   7  0712  M /27 556           81
+  632  6 02          SW    EOFSW                                                U   4  0719  , '80               81
+  633  6 03          B     COPY                                                 U   4  0723  B 525               81
+  634  6 04   *
+  635  6 05   * SET UP COPY OF REST OF SYSTEM
+  636  6 06   *
+  637  6 07   ISMOR  BW    BDEOF,LIBSW                                          U   8  0727  V 750 '79 1         81
+  638  6 08          CW    EOFSW                                                U   4  0735  ) '80               81
+  639  6 09          MCW   @B@,SWICH                                            U   7  0739  M /28 556           81
+  640  6 10          B     REOUT                                                U   4  0746  B 593               82
+  641  6 11   *
+  642  6 12   * FALSE END OF FILE
+  643  6 13   *
+  644  6 14   BDEOF  BSP   OUTAP                                                U   5  0750  U %U6 B             82
+  645  6 15          B     REOUT                                                U   4  0755  B 593               82
+  646  6 16   *
+  647  6 17   * TEST FOR NOISE RECORDS
+  648  6 18   *
+  649  6 19   NOISE  SBR   NOSXT&3                                              U   4  0759  H 797               82
+  650  6 20          SBR   XR2                                                  U   4  0763  H 094               82
+  651  6 21          MZ    &9,XR2                                               U   7  0767  Y /29 094           82
+  652  6 22   NOIS2  BCE   4000-26&X2,INPUT&13,}                                U   8  0774  B IP4 V13 } GMARK   82
+  653  6 23          CHAIN 12                                                   U                        MACRO
+  654                BCE                                                        U   1  0782  B           GEN     83
+  655                BCE                                                        U   1  0783  B           GEN     83
+  656                BCE                                                        U   1  0784  B           GEN     83
+  657                BCE                                                        U   1  0785  B           GEN     83
+  658                BCE                                                        U   1  0786  B           GEN     83
+  659                BCE                                                        U   1  0787  B           GEN     83
+  660                BCE                                                        U   1  0788  B           GEN     83
+  661                BCE                                                        U   1  0789  B           GEN     84
+  662                BCE                                                        U   1  0790  B           GEN     84
+  663                BCE                                                        U   1  0791  B           GEN     84
+  664                BCE                                                        U   1  0792  B           GEN     84
+  665                BCE                                                        U   1  0793  B           GEN     84
+  666  6 24   NOSXT  B     0                                                    U   4  0794  B 000               84
+  667  6 25   *
+1                          AUTOCODER-PASS 1 COPY SYSTEM TAPE         -VERSION 3       3714L               PAGE   15
+0 SEQ PG LIN  LABEL  OP    OPERANDS                                            SFX CT  LOCN  INSTRUCTION TYPE  CARD
+ 
+  668  6 26   * READ REDUNDANCY ROUTINE
+  669  6 27   *
+  670  6 28   RDERR  SBR   RDXT&3                                               U   4  0798  H 855               84
+  671  6 29          SBR   XR3                                                  U   4  0802  H 099               85
+  672  6 30          MZ    &9,XR3                                               U   7  0806  Y /29 099           85
+  673  6 31          MCW   4000-24&X3,RDTRY&7                                   U   7  0813  M IG6 846           85
+  674  6 32          MN    RDTRY&3,BSP1&3                                       U   7  0820  D 842 830           85
+  675  6 33   BSP1   BSP   SYSTP                                                U   5  0827  U %U1 B             85
+  676  6 34          MCW   &9,RDCT#1                                            U   7  0832  M /29 /30           85
+  677  6 35   RDTRY  RT    SYSTP,0                                              U   8  0839  M %U1 000 R         86
+  678  6 36          BER   *&5                                                  U   5  0847  B 856 L             86
+  679  6 37   RDXT   B     0                                                    U   4  0852  B 000               86
+  680  6 38          MN    RDTRY&3,BSP2&3                                       U   7  0856  D 842 866           86
+  681  6 39   BSP2   BSP   SYSTP                                                U   5  0863  U %U1 B             86
+  682  6 40          S     &1,RDCT                                              U   7  0868  S '71 /30           86
+  683  6 41          BWZ   RDTRY,RDCT,B                                         U   8  0875  V 839 /30 B         87
+  684  6 42          MN    RDTRY&3,*&7                                          U   7  0883  D 842 896           87
+  685  6 43          H     0,190                                                U   7  0890  . 000 190           87
+  686  6 44          MCW   RDTRY&7,*&8                                          U   7  0897  M 846 911           87
+  687  6 45          RT    SYSTP,0                                              U   8  0904  M %U1 000 R         87
+  688  6 46          BSS   BSP1,E                                               U   5  0912  B 827 E             88
+  689  6 47          H     0,111                                                U   7  0917  . 000 111           88
+  690  6 48          B     RDXT                                                 U   4  0924  B 852               88
+  691  6 49   *
+  692  6 50   * WRITE REDUNDANCY ROUTINE
+  693  6 51   *
+  694  6 52   WTERR  SBR   WTXT&3                                               U   4  0928  H 998               88
+  695  6 53          SBR   XR3                                                  U   4  0932  H 099               88
+  696  6 54          MZ    &9,XR3                                               U   7  0936  Y /29 099           88
+  697  6 55          MCW   4000-6&X3,WTTRY&7                                    U   7  0943  M II4 989           88
+  698  6 56          MN    WTTRY&3,BSP3&3                                       U   7  0950  D 985 960           89
+  699  6 57   BSP3   BSP   OUTAP                                                U   5  0957  U %U6 B             89
+  700  6 58          SKP   SYSTP                                                U   5  0962  U %U1 E             89
+  701  6 59          BCE   SUBCT,WTCT-1,1                                       U   8  0967  B 999 /31 1         89
+  702  6 60          A     &1,WTCT#2                                            U   7  0975  A '71 /32           89
+  703  6 61   WTTRY  WT    OUTAP,0                                              U   8  0982  M %U6 000 W         90
+  704  6 62          BER   BSP3                                                 U   5  0990  B 957 L             90
+  705  6 63   WTXT   B     0                                                    U   4  0995  B 000               90
+  706  6 64   SUBCT  S     WTCT                                                 U   4  0999  S /32               90
+  707  6 65          MN    WTTRY&3,*&7                                          U   7  1003  D 985 '16           90
+  708  6 66          H     0,160                                                U   7  1010  . 000 160           90
+  709  6 67          B     WTTRY                                                U   4  1017  B 982               90
+  710  6 68   *
+  711  6 69   * CLEAR OUTPUT AREA
+  712  6 70   *
+  713  6 71   CLEAR  SBR   CLRXT&3                                              U   4  1021  H '55               91
+  714  6 72          MCW   @I99@,CLR&3                                          U   7  1025  M /35 '35           91
+  715  6 73   CLR    CS    3999                                                 U   4  1032  / I99               91
+  716  6 74          SBR   CLR&3                                                U   4  1036  H '35               91
+  717  6 75          C     CLR&3,&INPUT-1                                       U   7  1040  C '35 /38           91
+1                          AUTOCODER-PASS 1 COPY SYSTEM TAPE         -VERSION 3       3714L               PAGE   16
+0 SEQ PG LIN  LABEL  OP    OPERANDS                                            SFX CT  LOCN  INSTRUCTION TYPE  CARD
+ 
+  718  6 76          BU    CLR                                                  U   5  1047  B '32 /             91
+  719  6 77   CLRXT  B     0                                                    U   4  1052  B 000               91
+  720  6 78          LTORG *                                                    U             1056
+                     DCW   @999999    HEADR@                                    U  15  1070              LIT     92
+                     DCW   &1                                                   U   1  1071              LIT     92
+              BYCTU  DCW   #01                                                  U   1  1072              AREA    92
+                     DCW   @999999@                                             U   6  1078              LIT     92
+              LIBSWU DCW   #01                                                  U   1  1079              AREA    92
+              EOFSWU DCW   #01                                                  U   1  1080              AREA    92
+              SKPCTU DCW   #02                                                  U   2  1082              AREA    92
+                     DCW   @1401 AUTOCODER SYSTEM COPIED ON TAPE UNIT 6@        U  43  1125              LIT     94
+              UPDSWU DCW   #01                                                  U   1  1126              AREA    94
+                     DCW   @N@                                                  U   1  1127              LIT     94
+                     DCW   @B@                                                  U   1  1128              LIT     94
+                     DCW   &9                                                   U   1  1129              LIT     94
+              RDCTU  DCW   #01                                                  U   1  1130              AREA    95
+              WTCTU  DCW   #02                                                  U   2  1132              AREA    95
+                     DCW   @I99@                                                U   3  1135              LIT     95
+                     DCW   &INPUTU-1                                            U   3  1138  U99         ADCON   95
+  721  6 79   ENDUP  DCW   @}@                                                  U   1  1139              GMARK   95
+  722  6 80          EX    0                                                    U            B 000               96
+1                          AUTOCODER-PASS 1 UPDATE LIBRARY           -VERSION 3       3715L               PAGE   17
+0 SEQ PG LIN  LABEL  OP    OPERANDS                                            SFX CT  LOCN  INSTRUCTION TYPE  CARD
+ 
+  723  6 81          JOB   AUTOCODER-PASS 1 UPDATE LIBRARY           -VERSION 3 U
+  724  6 82   IMAGE  EQU   101                                                  U      0101
+  725  6 83   *
+  726  6 84   * BEGIN UPDATE
+  727  6 85   *
+  728  6 86          ORG   INPUT                                                U             1500
+  729  6 87   BEGIN  RWD   SYSTP                                                U   5  1500  U %U1 R             99
+  730  6 88          CW    HEDSW,ENDSW                                          U   7  1505  ) ?91 ?98           99
+  731  6 89          MCW   &IMAGE&13,NOIS2&6                                    U   7  1512  M ?30 780           99
+  732  6 90          LCA   ENDUP,IMAGE&80                                       U   7  1519  L /39 181           99
+  733  6 91          RT    SYSTP,IMAGE                                          U   8  1526  M %U1 101 R         99
+  734  6 92          DCW   @N0000000000000@                                     U  14  1547                     100
+  735  6 93          B     NOISE                                                U   4  1548  B 759              100
+  736  6 94          CS    IMAGE&79                                             U   4  1552  / 180              100
+  737  6 95          B     RDTP                                                 U   4  1556  B M17              100
+  738  6 96   REBEG  B     READ                                                 U   4  1560  B L24              100
+  739  6 97          BW    SERCH,INSW                                           U   8  1564  V V84 ?73 1        100
+  740  6 98          BW    SERCH,DELSW                                          U   8  1572  V V84 ?79 1        101
+  741  6 99          B     REBEG                                                U   4  1580  B V60              101
+  742  7 00   *
+  743  7 01   * SEARCH FOR CORRECT SUBROUTINE
+  744  7 02   *
+  745  7 03   SERCH  B     DOCTL                                                U   4  1584  B N94              101
+  746  7 04          C     11,@999999@                                          U   7  1588  C 011 ?36          101
+  747  7 05          BE    CLNUP                                                U   5  1595  B K40 S            101
+  748  7 06          C     8,NAME#3                                             U   7  1600  C 008 ?39          101
+  749  7 07          BE    FOUND                                                U   5  1607  B X30 S            102
+  750  7 08          BH    QUIT                                                 U   5  1612  B P75 U            102
+  751  7 09          MCW   8,NAME                                               U   7  1617  M 008 ?39          102
+  752  7 10          S     SEQNO                                                U   4  1624  S A67              102
+  753  7 11   LOOP1  BW    HEADR,HEDSW                                          U   8  1628  V W56 ?91 1        102
+  754  7 12          B     RDTP                                                 U   4  1636  B M17              102
+  755  7 13          BW    HEADR,HEDSW                                          U   8  1640  V W56 ?91 1        103
+  756  7 14   MORE   B     WTAP2                                                U   4  1648  B M95              103
+  757  7 15          B     LOOP1                                                U   4  1652  B W28              103
+  758  7 16   *
+  759  7 17   * HEADER LOCATED ON TAPE
+  760  7 18   *
+  761  7 19   HEADR  BW    PAST,ENDSW                                           U   8  1656  V W89 ?98 1        103
+  762  7 20          C     IMAGE&7,NAME                                         U   7  1664  C 108 ?39          103
+  763  7 21          BE    FOUND                                                U   5  1671  B X30 S            103
+  764  7 22          CW    HEDSW                                                U   4  1676  ) ?91              104
+  765  7 23          BL    PAST                                                 U   5  1680  B W89 T            104
+  766  7 24          B     MORE                                                 U   4  1685  B W48              104
+  767  7 25   *
+  768  7 26   * SUBROUTINE NOT ON TAPE
+  769  7 27   *
+  770  7 28   PAST   BSP   SYSTP                                                U   5  1689  U %U1 B            104
+  771  7 29          CS    IMAGE&79                                             U   4  1694  / 180              104
+  772  7 30          CW    HEDSW                                                U   4  1698  ) ?91              104
+1                          AUTOCODER-PASS 1 UPDATE LIBRARY           -VERSION 3       3715L               PAGE   18
+0 SEQ PG LIN  LABEL  OP    OPERANDS                                            SFX CT  LOCN  INSTRUCTION TYPE  CARD
+ 
+  773  7 31          BW    UNKWN,DELSW                                          U   8  1702  V Q01 ?79 1        104
+  774  7 32          C     22,@  @                                              U   7  1710  C 022 ?41          105
+  775  7 33          BU    UNKWN                                                U   5  1717  B Q01 /            105
+  776  7 34   BACK   B     PTCTL                                                U   4  1722  B O37              105
+  777  7 35          B     INSER                                                U   4  1726  B Y06              105
+  778  7 36   *
+  779  7 37   * SUBROUTINE FOUND
+  780  7 38   *
+  781  7 39   FOUND  C     22,@  @                                              U   7  1730  C 022 ?41          105
+  782  7 40          BU    PARTL                                                U   5  1737  B Y46 /            105
+  783  7 41   *
+  784  7 42   * DELETE AND/OR INSERT WHOLE SUBROUTINES
+  785  7 43   *
+  786  7 44   ALL    MCW   @DELET@,218                                          U   7  1742  M ?46 218          105
+  787  7 45          B     PTCTL                                                U   4  1749  B O37              106
+  788  7 46          S     SEQNO                                                U   4  1753  S A67              106
+  789  7 47   LOOP2  B     PRINT                                                U   4  1757  B O72              106
+  790  7 48          B     RDTP                                                 U   4  1761  B M17              106
+  791  7 49          BW    EXIT,HEDSW                                           U   8  1765  V X77 ?91 1        106
+  792  7 50          B     LOOP2                                                U   4  1773  B X57              106
+  793  7 51   EXIT   BSP   SYSTP                                                U   5  1777  U %U1 B            106
+  794  7 52          CS    IMAGE&79                                             U   4  1782  / 180              107
+  795  7 53          CW    HEDSW                                                U   4  1786  ) ?91              107
+  796  7 54          BW    REBEG,DELSW                                          U   8  1790  V V60 ?79 1        107
+  797  7 55   *
+  798  7 56   * INSERTION OF WHOLE SUBROUTINE
+  799  7 57   *
+  800  7 58          B     DOCTL                                                U   4  1798  B N94              107
+  801  7 59          B     PTCTL                                                U   4  1802  B O37              107
+  802  7 60   INSER  S     SEQNO                                                U   4  1806  S A67              107
+  803  7 61   LOOP3  B     READ                                                 U   4  1810  B L24              107
+  804  7 62          BW    SERCH,INSW                                           U   8  1814  V V84 ?73 1        108
+  805  7 63          BW    SERCH,DELSW                                          U   8  1822  V V84 ?79 1        108
+  806  7 64          B     DOOUT                                                U   4  1830  B L07              108
+  807  7 65          B     PRINT                                                U   4  1834  B O72              108
+  808  7 66          B     WTAP2                                                U   4  1838  B M95              108
+  809  7 67          B     LOOP3                                                U   4  1842  B Y10              108
+  810  7 68   *
+  811  7 69   * DELETE AND/OR INSERT PARTS
+  812  7 70   *
+  813  7 71   PARTL  S     XR3&2                                                U   4  1846  S 101              108
+  814  7 72          BWZ   SOME,21,2                                            U   8  1850  V Y81 021 2        109
+  815  7 73          C     24,@  @                                              U   7  1858  C 024 ?41          109
+  816  7 74          BE    ALL                                                  U   5  1865  B X42 S            109
+  817  7 75          A     &2,XR3                                               U   7  1870  A ?47 099          109
+  818  7 76          SW    23                                                   U   4  1877  , 023              109
+  819  7 77   *
+  820  7 78   * SCAN FOR VALUES OF OPERANDS
+  821  7 79   *
+  822  7 80   SOME   SW    OPSW#1                                               U   4  1881  , ?48              109
+1                          AUTOCODER-PASS 1 UPDATE LIBRARY           -VERSION 3       3715L               PAGE   19
+0 SEQ PG LIN  LABEL  OP    OPERANDS                                            SFX CT  LOCN  INSTRUCTION TYPE  CARD
+ 
+  823  7 81   TEST1  BCE   TWOOP,21&X3,,                                        U   8  1885  B Z16 0B1 ,        110
+  824  7 82          C     22&X3,@  @                                           U   7  1893  C 0B2 ?41          110
+  825  7 83          BE    TWOOP                                                U   5  1900  B Z16 S            110
+  826  7 84          A     &1,XR3                                               U   7  1905  A ?49 099          110
+  827  7 85          B     TEST1                                                U   4  1912  B Y85              110
+  828  7 86   TWOOP  ZA    20&X3,WK1#4                                          U   7  1916  ? 0B0 ?53          110
+  829  7 87          A     @0@,WK1                                              U   7  1923  A ?54 ?53          111
+  830  7 88          BCE   NXTOP,21&X3,,                                        U   8  1930  B Z42 0B1 ,        111
+  831  7 89          B     OUT                                                  U   4  1938  B !08              111
+  832  7 90   NXTOP  SW    22&X3                                                U   4  1942  , 0B2              111
+  833  7 91          SBR   XR2                                                  U   4  1946  H 094              111
+  834  7 92   ADD    A     &1,XR3                                               U   7  1950  A ?49 099          111
+  835  7 93          C     22&X3,@  @                                           U   7  1957  C 0B2 ?41          112
+  836  7 94          BU    ADD                                                  U   5  1964  B Z50 /            112
+  837  7 95          ZA    20&X3,WK2#4                                          U   7  1969  ? 0B0 ?58          112
+  838  7 96          A     @0@,WK2                                              U   7  1976  A ?54 ?58          112
+  839  7 97          C     WK1,WK2                                              U   7  1983  C ?53 ?58          112
+  840  7 98          BL    BADST                                                U   5  1990  B Q59 T            112
+  841  7 99          BE    ONOP                                                 U   5  1995  B K20 S            113
+  842  8 00   IS2OP  CW    OPSW                                                 U   4  2000  ) ?48              113
+  843  8 01   CLRWM  CW    1&X2                                                 U   4  2004  ) 0!1              113
+  844  8 02   OUT    CW    23                                                   U   4  2008  ) 023              113
+  845  8 03          BW    *&8,OPSW                                             U   8  2012  V !27 ?48 1        113
+  846  8 04          MCW   @DELET@,218                                          U   7  2020  M ?63 218          113
+  847  8 05          B     PTCTL                                                U   4  2027  B O37              113
+  848  8 06   *
+  849  8 07   * SEARCH FOR FIRST STATEMENT
+  850  8 08   *
+  851  8 09   COMP   C     WK1,SEQNO                                            U   7  2031  C ?53 A67          114
+  852  8 10          BE    GOTIT                                                U   5  2038  B !70 S            114
+  853  8 11          A     &1,SEQNO                                             U   7  2043  A ?49 A67          114
+  854  8 12          B     WTAP2                                                U   4  2050  B M95              114
+  855  8 13          B     RDTP                                                 U   4  2054  B M17              114
+  856  8 14          BW    NTFND,HEDSW                                          U   8  2058  V Q84 ?91 1        114
+  857  8 15          B     COMP                                                 U   4  2066  B !31              114
+  858  8 16   *
+  859  8 17   * FIRST STATEMENT FOUND
+  860  8 18   *
+  861  8 19   GOTIT  BW    QINSR,OPSW                                           U   8  2070  V J46 ?48 1        115
+  862  8 20   *
+  863  8 21   * SEARCH FOR SECOND STATEMENT
+  864  8 22   *
+  865  8 23   COMP2  B     PRINT                                                U   4  2078  B O72              115
+  866  8 24          B     RDTP                                                 U   4  2082  B M17              115
+  867  8 25          C     WK2,SEQNO                                            U   7  2086  C ?58 A67          115
+  868  8 26          BH    BSPC                                                 U   5  2093  B J10 U            115
+  869  8 27          BW    NTFND,HEDSW                                          U   8  2098  V Q84 ?91 1        115
+  870  8 28          B     COMP2                                                U   4  2106  B !78              116
+  871  8 29   *
+  872  8 30   * SECOND STATEMENT FOUND
+1                          AUTOCODER-PASS 1 UPDATE LIBRARY           -VERSION 3       3715L               PAGE   20
+0 SEQ PG LIN  LABEL  OP    OPERANDS                                            SFX CT  LOCN  INSTRUCTION TYPE  CARD
+ 
+  873  8 31   *
+  874  8 32   BSPC   BSP   SYSTP                                                U   5  2110  U %U1 B            116
+  875  8 33          CS    IMAGE&79                                             U   4  2115  / 180              116
+  876  8 34          S     &1,SEQNO                                             U   7  2119  S ?49 A67          116
+  877  8 35   THRU   BW    LOOP3,DELSW                                          U   8  2126  V Y10 ?79 1        116
+  878  8 36          B     DOCTL                                                U   4  2134  B N94              116
+  879  8 37          B     PTCTL                                                U   4  2138  B O37              116
+  880  8 38          B     INSR&4                                               U   4  2142  B J77              117
+  881  8 39   *
+  882  8 40   * TEST INSERT OR DELETE
+  883  8 41   *
+  884  8 42   QINSR  BW    INSR,INSW                                            U   8  2146  V J73 ?73 1        117
+  885  8 43          B     PRINT                                                U   4  2154  B O72              117
+  886  8 44          S     &1,SEQNO                                             U   7  2158  S ?49 A67          117
+  887  8 45          CS    IMAGE&79                                             U   4  2165  / 180              117
+  888  8 46          B     THRU                                                 U   4  2169  B J26              117
+  889  8 47   *
+  890  8 48   * INSERT STATEMENTS
+  891  8 49   *
+  892  8 50   INSR   B     WTAP2                                                U   4  2173  B M95              117
+  893  8 51          B     READ                                                 U   4  2177  B L24              118
+  894  8 52          BW    SERCH,INSW                                           U   8  2181  V V84 ?73 1        118
+  895  8 53          BW    SERCH,DELSW                                          U   8  2189  V V84 ?79 1        118
+  896  8 54          B     DOOUT                                                U   4  2197  B L07              118
+  897  8 55          CW    SEQSW#1                                              U   4  2201  ) ?64              118
+  898  8 56          B     PRINT                                                U   4  2205  B O72              118
+  899  8 57          S     &1,SEQNO                                             U   7  2209  S ?49 A67          118
+  900  8 58          B     INSR                                                 U   4  2216  B J73              119
+  901  8 59   ONOP   BW    IS2OP,INSW                                           U   8  2220  V !00 ?73 1        119
+  902  8 60          SW    OPSW                                                 U   4  2228  , ?48              119
+  903  8 61          B     CLRWM                                                U   4  2232  B !04              119
+  904  8 62   *
+  905  8 63   * REPLICATE LIBRARY
+  906  8 64   *
+  907  8 65   REPET  B     WTAP2                                                U   4  2236  B M95              119
+  908  8 66   CLNUP  B     RDTP                                                 U   4  2240  B M17              119
+  909  8 67          B     WTAP2                                                U   4  2244  B M95              119
+  910  8 68          BW    FINAL,ENDSW                                          U   8  2248  V K60 ?98 1        120
+  911  8 69          B     CLNUP                                                U   4  2256  B K40              120
+  912  8 70   *
+  913  8 71   * END OF UPDATE - GO TO COPY ROUTINE
+  914  8 72   *
+  915  8 73   FINAL  WTM   OUTAP                                                U   5  2260  U %U6 M            120
+  916  8 74          MCW   &INPUT&13,NOIS2&6                                    U   7  2265  M ?67 780          120
+  917  8 75          CW    LIBSW,EOFSW                                          U   7  2272  ) '79 '80          120
+  918  8 76          CW    UPDSW                                                U   4  2279  ) /26              120
+  919  8 77          CS    332                                                  U   4  2283  / 332              120
+  920  8 78          CS                                                         U   1  2287  /                  121
+  921  8 79          CC    1                                                    U   2  2288  F 1                121
+  922  8 80   BYP1   RT    SYSTP,IMAGE                                          U   8  2290  M %U1 101 R        121
+1                          AUTOCODER-PASS 1 UPDATE LIBRARY           -VERSION 3       3715L               PAGE   21
+0 SEQ PG LIN  LABEL  OP    OPERANDS                                            SFX CT  LOCN  INSTRUCTION TYPE  CARD
+ 
+  923  8 81          BEF   REOUT                                                U   5  2298  B 593 K            121
+  924  8 82          B     BYP1                                                 U   4  2303  B K90              121
+  925  8 83   *
+  926  8 84   * SET UP INSERT CARD
+  927  8 85   *
+  928  8 86   DOOUT  SBR   OUTXT&3                                              U   4  2307  H L23              121
+  929  8 87          MCW   80,IMAGE&79                                          U   7  2311  M 080 180          121
+  930  8 88          MCW                                                        U   1  2318  M                  122
+  931  8 89          MCW                                                        U   1  2319  M                  122
+  932  8 90   OUTXT  B     0                                                    U   4  2320  B 000              122
+  933  8 91   *
+  934  8 92   * READ CARD SUBROUTINE
+  935  8 93   *
+  936  8 94   READ   SBR   CDXT&3                                               U   4  2324  H M08              122
+  937  8 95          BW    RDCD,LSTSW                                           U   8  2328  V L40 ?85 1        122
+  938  8 96          B     CLNUP                                                U   4  2336  B K40              122
+  939  8 97   RDCD   R                                                          U   1  2340  1                  122
+  940  8 98          CW    INSW,DELSW                                           U   7  2341  ) ?73 ?79          123
+  941  8 99          C     20,@INSER@                                           U   7  2348  C 020 ?72          123
+  942  9 00          BU    CKDEL                                                U   5  2355  B L68 /            123
+  943  9 01          SW    INSW#1                                               U   4  2360  , ?73              123
+  944  9 02          B     CDXT-5                                               U   4  2364  B M00              123
+  945  9 03   CKDEL  C     20,@DELET@                                           U   7  2368  C 020 ?78          123
+  946  9 04          BU    CKREP                                                U   5  2375  B L88 /            123
+  947  9 05          SW    DELSW#1                                              U   4  2380  , ?79              124
+  948  9 06          B     CDXT-5                                               U   4  2384  B M00              124
+  949  9 07   CKREP  C     20,@REPET@                                           U   7  2388  C 020 ?84          124
+  950  9 08          BE    REPET                                                U   5  2395  B K36 S            124
+  951  9 09          BLC   LSTCD                                                U   5  2400  B M09 A            124
+  952  9 10   CDXT   B     0                                                    U   4  2405  B 000              124
+  953  9 11   LSTCD  CW    LSTSW#1                                              U   4  2409  ) ?85              124
+  954  9 12          B     CDXT                                                 U   4  2413  B M05              125
+  955  9 13   *
+  956  9 14   * READ TAPE SUBROUTINE
+  957  9 15   *
+  958  9 16   RDTP   SBR   RTXT&3                                               U   4  2417  H M94              125
+  959  9 17          RT    SYSTP,IMAGE                                          U   8  2421  M %U1 101 R        125
+  960  9 18          SW    IMAGE&80                                             U   4  2429  , 181              125
+  961  9 19          DCW   @N000000000@                                         U  10  2442                     125
+  962  9 20          B     NOISE                                                U   4  2443  B 759              125
+  963  9 21          BER   RDERR                                                U   5  2447  B 798 L            125
+  964  9 22          CW    HEDSW,ENDSW                                          U   7  2452  ) ?91 ?98          126
+  965  9 23          C     IMAGE&19,@HEADR@                                     U   7  2459  C 120 ?90          126
+  966  9 24          BU    RTXT                                                 U   5  2466  B M91 /            126
+  967  9 25          SW    HEDSW#1                                              U   4  2471  , ?91              126
+  968  9 26          C     IMAGE&10,@999999@                                    U   7  2475  C 111 ?97          126
+  969  9 27          BU    RTXT                                                 U   5  2482  B M91 /            126
+  970  9 28          SW    ENDSW#1                                              U   4  2487  , ?98              126
+  971  9 29   RTXT   B     0                                                    U   4  2491  B 000              127
+  972  9 30   *
+1                          AUTOCODER-PASS 1 UPDATE LIBRARY           -VERSION 3       3715L               PAGE   22
+0 SEQ PG LIN  LABEL  OP    OPERANDS                                            SFX CT  LOCN  INSTRUCTION TYPE  CARD
+ 
+  973  9 31   * WRITE TAPE SUBROUTINE
+  974  9 32   *
+  975  9 33   WTAP2  SBR   WT2XT&3                                              U   4  2495  H N31              127
+  976  9 34          C     IMAGE&79,BLANK                                       U   7  2499  C 180 ?27          127
+  977  9 35          BE    WT2XT                                                U   5  2506  B N28 S            127
+  978  9 36          WT    OUTAP,IMAGE                                          U   8  2511  M %U6 101 W        127
+  979  9 37          BER   WTERR                                                U   5  2519  B 928 L            127
+  980  9 38          CS    IMAGE&79                                             U   4  2524  / 180              127
+  981  9 39   WT2XT  B     0                                                    U   4  2528  B 000              128
+  982  9 40   *
+  983  9 41   * PRINT HEADING
+  984  9 42   *
+  985  9 43   HEAD   SBR   HDXT&3                                               U   4  2532  H N93              128
+  986  9 44          CS    332                                                  U   4  2536  / 332              128
+  987  9 45          CS                                                         U   1  2540  /                  128
+  988  9 46          MCW   @1401 AUTOCODER - LIBRARY CHANGES@,251               U   7  2541  M A30 251          128
+  989  9 47          MCW   @PAGE@,275                                           U   7  2548  M A34 275          128
+  990  9 48          A     &1,PGNO#3                                            U   7  2555  A ?49 A37          128
+  991  9 49          MCS   PGNO,279                                             U   7  2562  Z A37 279          129
+  992  9 50          W                                                          U   1  2569  2                  129
+  993  9 51          CC    K                                                    U   2  2570  F K                129
+  994  9 52          CS    279                                                  U   4  2572  / 279              129
+  995  9 53          MCW   @SEQ  LABEL  OP    OPERANDS@,227                     U   7  2576  M A63 227          129
+  996  9 54          W                                                          U   1  2583  2                  129
+  997  9 55          CC    K                                                    U   2  2584  F K                129
+  998  9 56          CS    228                                                  U   4  2586  / 228              130
+  999  9 57   HDXT   B     0                                                    U   4  2590  B 000              130
+ 1000  9 58   *
+ 1001  9 59   * SET UP CONTROL CARD FOR PRINTING
+ 1002  9 60   *
+ 1003  9 61   DOCTL  SBR   CTLXT&3                                              U   4  2594  H O36              130
+ 1004  9 62          CC    K                                                    U   2  2598  F K                130
+ 1005  9 63          CS    332                                                  U   4  2600  / 332              130
+ 1006  9 64          CS                                                         U   1  2604  /                  130
+ 1007  9 65          MCW   72,271                                               U   7  2605  M 072 271          130
+ 1008  9 66          MCW   22,221                                               U   7  2612  M 022 221          131
+ 1009  9 67          MCW   20,218                                               U   7  2619  M 020 218          131
+ 1010  9 68          MCW   11,212                                               U   7  2626  M 011 212          131
+ 1011  9 69   CTLXT  B     0                                                    U   4  2633  B 000              131
+ 1012  9 70   *
+ 1013  9 71   * PRINT CONTROL CARD
+ 1014  9 72   *
+ 1015  9 73   PTCTL  SBR   PTCXT&3                                              U   4  2637  H O57              131
+ 1016  9 74          W                                                          U   1  2641  2                  131
+ 1017  9 75          CC    J                                                    U   2  2642  F J                131
+ 1018  9 76          CS    332                                                  U   4  2644  / 332              132
+ 1019  9 77          CS                                                         U   1  2648  /                  132
+ 1020  9 78          BCV   NEWPG                                                U   5  2649  B O58 @            132
+ 1021  9 79   PTCXT  B     0                                                    U   4  2654  B 000              132
+ 1022  9 80   *
+1                          AUTOCODER-PASS 1 UPDATE LIBRARY           -VERSION 3       3715L               PAGE   23
+0 SEQ PG LIN  LABEL  OP    OPERANDS                                            SFX CT  LOCN  INSTRUCTION TYPE  CARD
+ 
+ 1023  9 81   * NEW PAGE
+ 1024  9 82   *
+ 1025  9 83   NEWPG  SBR   NEWXT&3                                              U   4  2658  H O71              132
+ 1026  9 84          CC    1                                                    U   2  2662  F 1                132
+ 1027  9 85          B     HEAD                                                 U   4  2664  B N32              132
+ 1028  9 86   NEWXT  B     0                                                    U   4  2668  B 000              133
+ 1029  9 87   *
+ 1030  9 88   * PRINT STATEMENTS
+ 1031  9 89   *
+ 1032  9 90   PRINT  SBR   PTXT&3                                               U   4  2672  H P74              133
+ 1033  9 91          SW    220,214                                              U   7  2676  , 220 214          133
+ 1034  9 92          SW    207                                                  U   4  2683  , 207              133
+ 1035  9 93          BCE   COMNT,IMAGE&5,*                                      U   8  2687  B P32 106 *        133
+ 1036  9 94          MCW   IMAGE&71,271                                         U   7  2695  M 172 271          133
+ 1037  9 95          MCW   IMAGE&19,218                                         U   7  2702  M 120 218          134
+ 1038  9 96          MCW   IMAGE&10,212                                         U   7  2709  M 111 212          134
+ 1039  9 97   TSTSQ  BW    SEQNC,SEQSW                                          U   8  2716  V P45 ?64 1        134
+ 1040  9 98          SW    SEQSW                                                U   4  2724  , ?64              134
+ 1041  9 99          B     BUMP                                                 U   4  2728  B P53              134
+ 1042 10 00   COMNT  MCW   IMAGE&71,273                                         U   7  2732  M 172 273          134
+ 1043 10 01          MCW                                                        U   1  2739  M                  134
+ 1044 10 02          MCW                                                        U   1  2740  M                  135
+ 1045 10 03          B     TSTSQ                                                U   4  2741  B P16              135
+ 1046 10 04   SEQNC  MN    SEQNO,204                                            U   7  2745  D A67 204          135
+ 1047 10 05          MCS                                                        U   1  2752  Z                  135
+ 1048 10 06   BUMP   A     &1,SEQNO#4                                           U   7  2753  A ?49 A67          135
+ 1049 10 07          W                                                          U   1  2760  2                  135
+ 1050 10 08          CS    332                                                  U   4  2761  / 332              135
+ 1051 10 09          CS                                                         U   1  2765  /                  136
+ 1052 10 10          BCV   NEWPG                                                U   5  2766  B O58 @            136
+ 1053 10 11   PTXT   B     0                                                    U   4  2771  B 000              136
+ 1054 10 12   *
+ 1055 10 13   * SEQUENCE ERROR
+ 1056 10 14   *
+ 1057 10 15   QUIT   CS    332                                                  U   4  2775  / 332              136
+ 1058 10 16          CS                                                         U   1  2779  /                  136
+ 1059 10 17          MCW   @INPUT CARDS OUT OF SEQUENCE - START OVER@,240       U   7  2780  M B07 240          136
+ 1060 10 18          W                                                          U   1  2787  2                  136
+ 1061 10 19          CC    1                                                    U   2  2788  F 1                137
+ 1062 10 20   HALT2  H     0,133                                                U   7  2790  . 000 133          137
+ 1063 10 21          B     HALT2                                                U   4  2797  B P90              137
+ 1064 10 22   *
+ 1065 10 23   * SUBROUTINE UNKNOWN
+ 1066 10 24   *
+ 1067 10 25   UNKWN  BWZ   ISUNK,21,2                                           U   8  2801  V Q21 021 2        137
+ 1068 10 26          C     24,@  @                                              U   7  2809  C 024 ?41          137
+ 1069 10 27          BE    BACK                                                 U   5  2816  B X22 S            137
+ 1070 10 28   ISUNK  MCW   @SUBROUTINE UNKNOWN@,299                             U   7  2821  M B25 299          138
+ 1071 10 29          W                                                          U   1  2828  2                  138
+ 1072 10 30          CC    L                                                    U   2  2829  F L                138
+1                          AUTOCODER-PASS 1 UPDATE LIBRARY           -VERSION 3       3715L               PAGE   24
+0 SEQ PG LIN  LABEL  OP    OPERANDS                                            SFX CT  LOCN  INSTRUCTION TYPE  CARD
+ 
+ 1073 10 31          CS    299                                                  U   4  2831  / 299              138
+ 1074 10 32   LOOP4  B     READ                                                 U   4  2835  B L24              138
+ 1075 10 33          BW    SERCH,INSW                                           U   8  2839  V V84 ?73 1        138
+ 1076 10 34          BW    SERCH,DELSW                                          U   8  2847  V V84 ?79 1        138
+ 1077 10 35          B     LOOP4                                                U   4  2855  B Q35              139
+ 1078 10 36   *
+ 1079 10 37   * BAD CONTROL CARD
+ 1080 10 38   *
+ 1081 10 39   BADST  MCW   @BAD STATEMENT@,299                                  U   7  2859  M B38 299          139
+ 1082 10 40          W                                                          U   1  2866  2                  139
+ 1083 10 41          CC    L                                                    U   2  2867  F L                139
+ 1084 10 42          CS    299                                                  U   4  2869  / 299              139
+ 1085 10 43          CW    1&X2,23                                              U   7  2873  ) 0!1 023          139
+ 1086 10 44          B     LOOP4                                                U   4  2880  B Q35              139
+ 1087 10 45   *
+ 1088 10 46   * STATEMENT DOES NOT EXIST IN SUBROUTINE
+ 1089 10 47   *
+ 1090 10 48   NTFND  MCW   @STATEMENT DOES NOT EXIST@,299                       U   7  2884  M B62 299          140
+ 1091 10 49          W                                                          U   1  2891  2                  140
+ 1092 10 50          CC    L                                                    U   2  2892  F L                140
+ 1093 10 51          CS    299                                                  U   4  2894  / 299              140
+ 1094 10 52          BW    END99,ENDSW                                          U   8  2898  V R10 ?98 1        140
+ 1095 10 53          B     LOOP4                                                U   4  2906  B Q35              140
+ 1096 10 54   *
+ 1097 10 55   * END OF LIBRARY REACHED BEFORE ROUTINE FOUND
+ 1098 10 56   *
+ 1099 10 57   END99  MCW   @SUBROUTINE UNKNOWN@,299                             U   7  2910  M B80 299          140
+ 1100 10 58          W                                                          U   1  2917  2                  141
+ 1101 10 59          CC    L                                                    U   2  2918  F L                141
+ 1102 10 60          CS    299                                                  U   4  2920  / 299              141
+ 1103 10 61          MCW   @END OF LIBRARY REACHED@,222                         U   7  2924  M C02 222          141
+ 1104 10 62          W                                                          U   1  2931  2                  141
+ 1105 10 63          BSP   SYSTP                                                U   5  2932  U %U1 B            141
+ 1106 10 64          CS    IMAGE&79                                             U   4  2937  / 180              141
+ 1107 10 65   LOOP6  B     READ                                                 U   4  2941  B L24              142
+ 1108 10 66          B     LOOP6                                                U   4  2945  B R41              142
+ 1109 10 67          DCW   #50                                                  U  50  2998                     144
+ 1110 10 68   BLANK  DC    #29                                                  U  29  3027                     145
+ 1111 10 69          LTORG *                                                    U             3028
+                     DCW   &IMAGEU&13                                           U   3  3030  114         ADCON  145
+                     DCW   @999999@                                             U   6  3036              LIT    145
+              NAMEU  DCW   #03                                                  U   3  3039              AREA   146
+                     DCW   @  @                                                 U   2  3041              LIT    146
+                     DCW   @DELET@                                              U   5  3046              LIT    146
+                     DCW   &2                                                   U   1  3047              LIT    146
+              OPSWU  DCW   #01                                                  U   1  3048              AREA   146
+                     DCW   &1                                                   U   1  3049              LIT    146
+              WK1U   DCW   #04                                                  U   4  3053              AREA   146
+                     DCW   @0@                                                  U   1  3054              LIT    147
+              WK2U   DCW   #04                                                  U   4  3058              AREA   147
+1                          AUTOCODER-PASS 1 UPDATE LIBRARY           -VERSION 3       3715L               PAGE   25
+0 SEQ PG LIN  LABEL  OP    OPERANDS                                            SFX CT  LOCN  INSTRUCTION TYPE  CARD
+ 
+                     DCW   @DELET@                                              U   5  3063              LIT    147
+              SEQSWU DCW   #01                                                  U   1  3064              AREA   147
+                     DCW   &INPUTU&13                                           U   3  3067  V13         ADCON  147
+                     DCW   @INSER@                                              U   5  3072              LIT    147
+              INSWU  DCW   #01                                                  U   1  3073              AREA   147
+                     DCW   @DELET@                                              U   5  3078              LIT    148
+              DELSWU DCW   #01                                                  U   1  3079              AREA   148
+                     DCW   @REPET@                                              U   5  3084              LIT    148
+              LSTSWU DCW   #01                                                  U   1  3085              AREA   148
+                     DCW   @HEADR@                                              U   5  3090              LIT    148
+              HEDSWU DCW   #01                                                  U   1  3091              AREA   148
+                     DCW   @999999@                                             U   6  3097              LIT    148
+              ENDSWU DCW   #01                                                  U   1  3098              AREA   149
+                     DCW   @1401 AUTOCODER - LIBRARY CHANGES@                   U  32  3130              LIT    149
+                     DCW   @PAGE@                                               U   4  3134              LIT    149
+              PGNOU  DCW   #03                                                  U   3  3137              AREA   150
+                     DCW   @SEQ  LABEL  OP    OPERANDS@                         U  26  3163              LIT    150
+              SEQNOU DCW   #04                                                  U   4  3167              AREA   150
+                     DCW   @INPUT CARDS OUT OF SEQUENCE - START OVER@           U  40  3207              LIT    152
+                     DCW   @SUBROUTINE UNKNOWN@                                 U  18  3225              LIT    152
+                     DCW   @BAD STATEMENT@                                      U  13  3238              LIT    152
+                     DCW   @STATEMENT DOES NOT EXIST@                           U  24  3262              LIT    153
+                     DCW   @SUBROUTINE UNKNOWN@                                 U  18  3280              LIT    154
+                     DCW   @END OF LIBRARY REACHED@                             U  22  3302              LIT    155
+ 1112 10 70   3998   DCW   @}@                                                  U   1  3998              GMARK  156
+ 1113 10 71          EX    0                                                    U            B 000              157
+1                          AUTOCODER-PASS 1 OUTPUT LIBRARY           -VERSION 3       3716L               PAGE   26
+0 SEQ PG LIN  LABEL  OP    OPERANDS                                            SFX CT  LOCN  INSTRUCTION TYPE  CARD
+ 
+ 1114 10 72          JOB   AUTOCODER-PASS 1 OUTPUT LIBRARY           -VERSION 3 U
+ 1115 10 73          SFX   P                                                    P
+ 1116 10 74   SYSTP  EQU   %U1                                                  P      %U1
+ 1117 10 75   XR1    EQU   89                                                   P      0089
+ 1118 10 76   *
+ 1119 10 77   * BEGIN PROGRAM
+ 1120 10 78   *
+ 1121 10 79          ORG   2000                                                 P             2000
+ 1122 10 80          SW    ENDOT                                                P   4  2000  , ?44              160
+ 1123 10 81          LCA   ENDOT,181                                            P   7  2004  L ?44 181          160
+ 1124 10 82          CS                                                         P   1  2011  /                  160
+ 1125 10 83          CS    80                                                   P   4  2012  / 080              160
+ 1126 10 84          SW    6,16                                                 P   7  2016  , 006 016          160
+ 1127 10 85          CS    332                                                  P   4  2023  / 332              160
+ 1128 10 86          CS                                                         P   1  2027  /                  160
+ 1129 10 87          CC    1                                                    P   2  2028  F 1                161
+ 1130 10 88          RWD   SYSTP                                                P   5  2030  U %U1 R            161
+ 1131 10 89          RT    SYSTP,101                                            P   8  2035  M %U1 101 R        161
+ 1132 10 90          CS    180                                                  P   4  2043  / 180              161
+ 1133 10 91          SW    106,116                                              P   7  2047  , 106 116          161
+ 1134 10 92          SW    121                                                  P   4  2054  , 121              161
+ 1135 10 93          BSS   DOALL,E                                              P   5  2058  B L28 E            161
+ 1136 10 94   *
+ 1137 10 95   * PRINT AND/OR PUNCH SELECTED MACROS
+ 1138 10 96   *
+ 1139 10 97          CW    HDRSW                                                P   4  2063  ) R32              162
+ 1140 10 98   READ   CC    1                                                    P   2  2067  F 1                162
+ 1141 10 99          B     PRTHD                                                P   4  2069  B N59              162
+ 1142 11 00          R                                                          P   1  2073  1                  162
+ 1143 11 01          MCW   @2@,OPCOD                                            P   7  2074  M Q90 O69          162
+ 1144 11 02          C     20,@PRINT@                                           P   7  2081  C 020 Q95          162
+ 1145 11 03          BE    SELMC                                                P   5  2088  B J19 S            162
+ 1146 11 04          C     20,@PUNCH@                                           P   7  2093  C 020 R00          163
+ 1147 11 05          BU    ERROR                                                P   5  2100  B N06 /            163
+ 1148 11 06   *
+ 1149 11 07   * PUNCH OPTION
+ 1150 11 08   *
+ 1151 11 09          A     &4,OPCOD                                             P   7  2105  A R01 O69          163
+ 1152 11 10          MN    &4,OPSAV#1                                           P   7  2112  D R01 R02          163
+ 1153 11 11   *
+ 1154 11 12   * SEARCH FOR MACRO
+ 1155 11 13   *
+ 1156 11 14   SELMC  C     8,NAME#3                                             P   7  2119  C 008 R05          163
+ 1157 11 15          BE    TSTLC                                                P   5  2126  B K96 S            163
+ 1158 11 16          MCW   20,218                                               P   7  2131  M 020 218          164
+ 1159 11 17          MCW   11,212                                               P   7  2138  M 011 212          164
+ 1160 11 18          BL    RDTP2                                                P   5  2145  B J85 T            164
+ 1161 11 19          RWD   SYSTP                                                P   5  2150  U %U1 R            164
+ 1162 11 20          LCA   ENDOT,181                                            P   7  2155  L ?44 181          164
+ 1163 11 21          RT    SYSTP,101                                            P   8  2162  M %U1 101 R        164
+1                          AUTOCODER-PASS 1 OUTPUT LIBRARY           -VERSION 3       3716L               PAGE   27
+0 SEQ PG LIN  LABEL  OP    OPERANDS                                            SFX CT  LOCN  INSTRUCTION TYPE  CARD
+ 
+ 1164 11 22          CS    180                                                  P   4  2170  / 180              165
+ 1165 11 23          SW    106,116                                              P   7  2174  , 106 116          165
+ 1166 11 24          SW    121                                                  P   4  2181  , 121              165
+ 1167 11 25   RDTP2  RT    SYSTP,101                                            P   8  2185  M %U1 101 R        165
+ 1168 11 26          B     NOISE                                                P   4  2193  B P67              165
+ 1169 11 27          BER   RDERR                                                P   5  2197  B Q06 L            165
+ 1170 11 28          C     111,@999999@                                         P   7  2202  C 111 R11          165
+ 1171 11 29          BE    UNKN                                                 P   5  2209  B L05 S            166
+ 1172 11 30          C     120,@HEADR@                                          P   7  2214  C 120 R16          166
+ 1173 11 31          BU    RDTP2                                                P   5  2221  B J85 /            166
+ 1174 11 32          C     8,108                                                P   7  2226  C 008 108          166
+ 1175 11 33          BU    RDTP2                                                P   5  2233  B J85 /            166
+ 1176 11 34   *
+ 1177 11 35   * DESIRED MACRO FOUND
+ 1178 11 36   *
+ 1179 11 37          MCW   8,NAME                                               P   7  2238  M 008 R05          166
+ 1180 11 38          CC    K                                                    P   2  2245  F K                166
+ 1181 11 39          W                                                          P   1  2247  2                  167
+ 1182 11 40          S     SEQNO                                                P   4  2248  S R48              167
+ 1183 11 41          B     INSER                                                P   4  2252  B N17              167
+ 1184 11 42          CC    K                                                    P   2  2256  F K                167
+ 1185 11 43   PTAGN  B     PRINT                                                P   4  2258  B N81              167
+ 1186 11 44          RT    SYSTP,101                                            P   8  2262  M %U1 101 R        167
+ 1187 11 45          B     NOISE                                                P   4  2270  B P67              167
+ 1188 11 46          BER   RDERR                                                P   5  2274  B Q06 L            168
+ 1189 11 47          C     120,@HEADR@                                          P   7  2279  C 120 R21          168
+ 1190 11 48          BU    PTAGN                                                P   5  2286  B K58 /            168
+ 1191 11 49          BSP   SYSTP                                                P   5  2291  U %U1 B            168
+ 1192 11 50   *
+ 1193 11 51   * TEST END OF RUN
+ 1194 11 52   *
+ 1195 11 53   TSTLC  BLC   EOJOB                                                P   5  2296  B M54 A            168
+ 1196 11 54          B     READ                                                 P   4  2301  B !67              168
+ 1197 11 55   *
+ 1198 11 56   * MACRO NOT ON TAPE
+ 1199 11 57   *
+ 1200 11 58   UNKN   MCW   @UNKNOWN@,299                                        P   7  2305  M R28 299          168
+ 1201 11 59          W                                                          P   1  2312  2                  169
+ 1202 11 60          CS    299                                                  P   4  2313  / 299              169
+ 1203 11 61          MCW   @999@,NAME                                           P   7  2317  M R31 R05          169
+ 1204 11 62          B     TSTLC                                                P   4  2324  B K96              169
+ 1205 11 63   *
+ 1206 11 64   * PRINT AND/OR PUNCH ALL OR PRINT HEADERS ONLY
+ 1207 11 65   *
+ 1208 11 66   DOALL  BSS   SETUP,D                                              P   5  2328  B L60 D            169
+ 1209 11 67          CW    HDRSW#1                                              P   4  2333  ) R32              169
+ 1210 11 68          BSS   *&5,G                                                P   5  2337  B L46 G            169
+ 1211 11 69          B     SETUP                                                P   4  2342  B L60              170
+ 1212 11 70   *
+ 1213 11 71   * PUNCH ALL
+1                          AUTOCODER-PASS 1 OUTPUT LIBRARY           -VERSION 3       3716L               PAGE   28
+0 SEQ PG LIN  LABEL  OP    OPERANDS                                            SFX CT  LOCN  INSTRUCTION TYPE  CARD
+ 
+ 1214 11 72   *
+ 1215 11 73          A     &4,OPCOD                                             P   7  2346  A R01 O69          170
+ 1216 11 74          MN    &4,OPSAV                                             P   7  2353  D R01 R02          170
+ 1217 11 75   SETUP  B     HEAD1                                                P   4  2360  B P19              170
+ 1218 11 76          CW    HDSW1#1                                              P   4  2364  ) R33              170
+ 1219 11 77          B     PRTHD                                                P   4  2368  B N59              170
+ 1220 11 78   RDTP   RT    SYSTP,101                                            P   8  2372  M %U1 101 R        170
+ 1221 11 79          B     NOISE                                                P   4  2380  B P67              171
+ 1222 11 80          BER   RDERR                                                P   5  2384  B Q06 L            171
+ 1223 11 81          C     111,@999999@                                         P   7  2389  C 111 R39          171
+ 1224 11 82          BE    EOJOB                                                P   5  2396  B M54 S            171
+ 1225 11 83          C     120,@HEADR@                                          P   7  2401  C 120 R44          171
+ 1226 11 84          BU    DOPNT                                                P   5  2408  B M35 /            171
+ 1227 11 85          B     INSER                                                P   4  2413  B N17              171
+ 1228 11 86          CC    K                                                    P   2  2417  F K                172
+ 1229 11 87          SBR   PRTXT&3,*&6                                          P   7  2419  H O83 M31          172
+ 1230 11 88          BCV   NEWPG                                                P   5  2426  B O97 @            172
+ 1231 11 89          S     SEQNO#4                                              P   4  2431  S R48              172
+ 1232 11 90   DOPNT  B     PRINT                                                P   4  2435  B N81              172
+ 1233 11 91          SW    106,116                                              P   7  2439  , 106 116          172
+ 1234 11 92          SW    121                                                  P   4  2446  , 121              172
+ 1235 11 93          B     RDTP                                                 P   4  2450  B L72              173
+ 1236 11 94   *
+ 1237 11 95   * END OF JOB
+ 1238 11 96   *
+ 1239 11 97   EOJOB  CS    332                                                  P   4  2454  / 332              173
+ 1240 11 98          CS                                                         P   1  2458  /                  173
+ 1241 11 99          CC    K                                                    P   2  2459  F K                173
+ 1242 12 00          MCW   @END OF LIBRARY@,214                                 P   7  2461  M R62 214          173
+ 1243 12 01          W                                                          P   1  2468  2                  173
+ 1244 12 02          CC    1                                                    P   2  2469  F 1                173
+ 1245 12 03          CS    180                                                  P   4  2471  / 180              174
+ 1246 12 04          BCE   CLRPH,OPSAV,4                                        P   8  2475  B M99 R02 4        174
+ 1247 12 05   RWD    RWD   SYSTP                                                P   5  2483  U %U1 R            174
+ 1248 12 06   HALT   H     0,155                                                P   7  2488  . 000 155          174
+ 1249 12 07          B     HALT                                                 P   4  2495  B M88              174
+ 1250 12 08   CLRPH  P                                                          P   1  2499  4                  174
+ 1251 12 09          SS    8                                                    P   2  2500  K 8                174
+ 1252 12 10          B     RWD                                                  P   4  2502  B M83              175
+ 1253 12 11   *
+ 1254 12 12   * INCORRECT INPUT CARD
+ 1255 12 13   *
+ 1256 12 14   ERROR  H     0,144                                                P   7  2506  . 000 144          175
+ 1257 12 15          B     TSTLC                                                P   4  2513  B K96              175
+ 1258 12 16   INSER  SBR   INSXT&3                                              P   4  2517  H N58              175
+ 1259 12 17          MCW   @     @,105                                          P   7  2521  M R67 105          175
+ 1260 12 18          MCW   @INSER@,120                                          P   7  2528  M R72 120          175
+ 1261 12 19          BCE   *&5,OPSAV,4                                          P   8  2535  B N47 R02 4        176
+ 1262 12 20          B     *&2                                                  P   4  2543  B N48              176
+ 1263 12 21          P                                                          P   1  2547  4                  176
+1                          AUTOCODER-PASS 1 OUTPUT LIBRARY           -VERSION 3       3716L               PAGE   29
+0 SEQ PG LIN  LABEL  OP    OPERANDS                                            SFX CT  LOCN  INSTRUCTION TYPE  CARD
+ 
+ 1264 12 22          MCW   @HEADR@,120                                          P   7  2548  M R77 120          176
+ 1265 12 23   INSXT  B     0                                                    P   4  2555  B 000              176
+ 1266 12 24   *
+ 1267 12 25   * PRINT HEADING
+ 1268 12 26   *
+ 1269 12 27   PRTHD  SBR   HDXT&3                                               P   4  2559  H N80              176
+ 1270 12 28          MCW   @SEQ  LABEL  OP    OPERANDS@,227                     P   7  2563  M ?03 227          176
+ 1271 12 29          W                                                          P   1  2570  2                  177
+ 1272 12 30          CC    K                                                    P   2  2571  F K                177
+ 1273 12 31          CS    228                                                  P   4  2573  / 228              177
+ 1274 12 32   HDXT   B     0                                                    P   4  2577  B 000              177
+ 1275 12 33   *
+ 1276 12 34   * PRINT STATEMENT
+ 1277 12 35   *
+ 1278 12 36   PRINT  SBR   PRTXT&3                                              P   4  2581  H O83              177
+ 1279 12 37          C     120,@HEADR@                                          P   7  2585  C 120 ?08          177
+ 1280 12 38          BE    DOHDR                                                P   5  2592  B O05 S            177
+ 1281 12 39          BW    CLR,HDRSW                                            P   8  2597  V O70 R32 1        178
+ 1282 12 40   DOHDR  CS    332                                                  P   4  2605  / 332              178
+ 1283 12 41          CS                                                         P   1  2609  /                  178
+ 1284 12 42          BCE   COMNT,106,*                                          P   8  2610  B O84 106 *        178
+ 1285 12 43          MCW   172,271                                              P   7  2618  M 172 271          178
+ 1286 12 44          MCW   120,218                                              P   7  2625  M 120 218          178
+ 1287 12 45          MCW   111,212                                              P   7  2632  M 111 212          179
+ 1288 12 46   DOSEQ  MN    SEQNO,204                                            P   7  2639  D R48 204          179
+ 1289 12 47          MCS                                                        P   1  2646  Z                  179
+ 1290 12 48          MN    SEQNO,104                                            P   7  2647  D R48 104          179
+ 1291 12 49          MCW                                                        P   1  2654  M                  179
+ 1292 12 50          A     &1,SEQNO                                             P   7  2655  A ?09 R48          179
+ 1293 12 51          MCW   @ @,105                                              P   7  2662  M ?10 105          179
+ 1294 12 52   OPCOD  W                                                          P   1  2669  2                  180
+ 1295 12 53   CLR    CS    332                                                  P   4  2670  / 332              180
+ 1296 12 54          CS                                                         P   1  2674  /                  180
+ 1297 12 55          BCV   NEWPG                                                P   5  2675  B O97 @            180
+ 1298 12 56   PRTXT  B     0                                                    P   4  2680  B 000              180
+ 1299 12 57   COMNT  MCW   172,273                                              P   7  2684  M 172 273          180
+ 1300 12 58          MCW                                                        P   1  2691  M                  180
+ 1301 12 59          MCW                                                        P   1  2692  M                  181
+ 1302 12 60          B     DOSEQ                                                P   4  2693  B O39              181
+ 1303 12 61   *
+ 1304 12 62   * START NEW PAGE
+ 1305 12 63   *
+ 1306 12 64   NEWPG  CC    1                                                    P   2  2697  F 1                181
+ 1307 12 65          BW    *&5,HDSW1                                            P   8  2699  V P11 R33 1        181
+ 1308 12 66          B     HEAD1                                                P   4  2707  B P19              181
+ 1309 12 67          B     PRTHD                                                P   4  2711  B N59              181
+ 1310 12 68          B     PRTXT                                                P   4  2715  B O80              181
+ 1311 12 69   *
+ 1312 12 70   * PRINT MAIN HEADING
+ 1313 12 71   *
+1                          AUTOCODER-PASS 1 OUTPUT LIBRARY           -VERSION 3       3716L               PAGE   30
+0 SEQ PG LIN  LABEL  OP    OPERANDS                                            SFX CT  LOCN  INSTRUCTION TYPE  CARD
+ 
+ 1314 12 72   HEAD1  SBR   HD2XT&3                                              P   4  2719  H P66              182
+ 1315 12 73          CS    332                                                  P   4  2723  / 332              182
+ 1316 12 74          CS                                                         P   1  2727  /                  182
+ 1317 12 75          MCW   @1401 AUTOCODER - LIBRARY@,243                       P   7  2728  M ?34 243          182
+ 1318 12 76          MCW   @PAGE@,275                                           P   7  2735  M ?38 275          182
+ 1319 12 77          A     &1,PGNO#3                                            P   7  2742  A ?09 ?41          182
+ 1320 12 78          MCS   PGNO,279                                             P   7  2749  Z ?41 279          182
+ 1321 12 79          W                                                          P   1  2756  2                  183
+ 1322 12 80          CC    L                                                    P   2  2757  F L                183
+ 1323 12 81          CS    299                                                  P   4  2759  / 299              183
+ 1324 12 82   HD2XT  B     0                                                    P   4  2763  B 000              183
+ 1325 12 83   *
+ 1326 12 84   * TEST FOR NOISE RECORDS
+ 1327 12 85   *
+ 1328 12 86   NOISE  SBR   NOSXT&3                                              P   4  2767  H Q05              183
+ 1329 12 87          SBR   XR1                                                  P   4  2771  H 089              183
+ 1330 12 88          MZ    &9,XR1                                               P   7  2775  Y ?42 089          183
+ 1331 12 89          BCE   4000-12&X1,113,}                                     P   8  2782  B IY8 113 } GMARK  184
+ 1332 12 90          CHAIN 12                                                   P                        MACRO
+ 1333                BCE                                                        P   1  2790  B           GEN    184
+ 1334                BCE                                                        P   1  2791  B           GEN    184
+ 1335                BCE                                                        P   1  2792  B           GEN    184
+ 1336                BCE                                                        P   1  2793  B           GEN    184
+ 1337                BCE                                                        P   1  2794  B           GEN    184
+ 1338                BCE                                                        P   1  2795  B           GEN    184
+ 1339                BCE                                                        P   1  2796  B           GEN    185
+ 1340                BCE                                                        P   1  2797  B           GEN    185
+ 1341                BCE                                                        P   1  2798  B           GEN    185
+ 1342                BCE                                                        P   1  2799  B           GEN    185
+ 1343                BCE                                                        P   1  2800  B           GEN    185
+ 1344                BCE                                                        P   1  2801  B           GEN    185
+ 1345 12 91   NOSXT  B     0                                                    P   4  2802  B 000              185
+ 1346 12 92   *
+ 1347 12 93   * READ REDUNDANCY ROUTINE
+ 1348 12 94   *
+ 1349 12 95   RDERR  SBR   RDXT&3                                               P   4  2806  H Q38              186
+ 1350 12 96   BSP    BSP   SYSTP                                                P   5  2810  U %U1 B            186
+ 1351 12 97          MCW   &9,RDCT#1                                            P   7  2815  M ?42 ?43          186
+ 1352 12 98   RDTRY  RT    SYSTP,101                                            P   8  2822  M %U1 101 R        186
+ 1353 12 99          BER   *&5                                                  P   5  2830  B Q39 L            186
+ 1354 13 00   RDXT   B     0                                                    P   4  2835  B 000              186
+ 1355 13 01          BSP   SYSTP                                                P   5  2839  U %U1 B            186
+ 1356 13 02          S     &1,RDCT                                              P   7  2844  S ?09 ?43          187
+ 1357 13 03          BWZ   RDTRY,RDCT,B                                         P   8  2851  V Q22 ?43 B        187
+ 1358 13 04          H     0,191                                                P   7  2859  . 000 191          187
+ 1359 13 05          RT    SYSTP,101                                            P   8  2866  M %U1 101 R        187
+ 1360 13 06          BSS   BSP,E                                                P   5  2874  B Q10 E            187
+ 1361 13 07          H     0,111                                                P   7  2879  . 000 111          188
+ 1362 13 08          B     RDXT                                                 P   4  2886  B Q35              188
+ 1363 13 09          LTORG *                                                    P             2890
+1                          AUTOCODER-PASS 1 OUTPUT LIBRARY           -VERSION 3       3716L               PAGE   31
+0 SEQ PG LIN  LABEL  OP    OPERANDS                                            SFX CT  LOCN  INSTRUCTION TYPE  CARD
+ 
+                     DCW   @2@                                                  P   1  2890              LIT    188
+                     DCW   @PRINT@                                              P   5  2895              LIT    188
+                     DCW   @PUNCH@                                              P   5  2900              LIT    188
+                     DCW   &4                                                   P   1  2901              LIT    188
+              OPSAVP DCW   #01                                                  P   1  2902              AREA   188
+              NAMEP  DCW   #03                                                  P   3  2905              AREA   189
+                     DCW   @999999@                                             P   6  2911              LIT    189
+                     DCW   @HEADR@                                              P   5  2916              LIT    189
+                     DCW   @HEADR@                                              P   5  2921              LIT    189
+                     DCW   @UNKNOWN@                                            P   7  2928              LIT    189
+                     DCW   @999@                                                P   3  2931              LIT    189
+              HDRSWP DCW   #01                                                  P   1  2932              AREA   189
+              HDSW1P DCW   #01                                                  P   1  2933              AREA   190
+                     DCW   @999999@                                             P   6  2939              LIT    190
+                     DCW   @HEADR@                                              P   5  2944              LIT    190
+              SEQNOP DCW   #04                                                  P   4  2948              AREA   190
+                     DCW   @END OF LIBRARY@                                     P  14  2962              LIT    190
+                     DCW   @     @                                              P   5  2967              LIT    190
+                     DCW   @INSER@                                              P   5  2972              LIT    191
+                     DCW   @HEADR@                                              P   5  2977              LIT    191
+                     DCW   @SEQ  LABEL  OP    OPERANDS@                         P  26  3003              LIT    191
+                     DCW   @HEADR@                                              P   5  3008              LIT    192
+                     DCW   &1                                                   P   1  3009              LIT    192
+                     DCW   @ @                                                  P   1  3010              LIT    192
+                     DCW   @1401 AUTOCODER - LIBRARY@                           P  24  3034              LIT    192
+                     DCW   @PAGE@                                               P   4  3038              LIT    192
+              PGNOP  DCW   #03                                                  P   3  3041              AREA   192
+                     DCW   &9                                                   P   1  3042              LIT    192
+              RDCTP  DCW   #01                                                  P   1  3043              AREA   193
+ 1364 13 10   ENDOT  DCW   @}@                                                  P   1  3044              GMARK  193
+ 1365 13 11          EX    0                                                    P            B 000              194
+ 1366 13 12          END   0                                                    P            / 000 080
+1                          AUTOCODER-PASS 1 OUTPUT LIBRARY           -VERSION 3       3716L               PAGE   32
+0SYMBOL  ADDRESS  SYMBOL  ADDRESS  SYMBOL  ADDRESS  SYMBOL  ADDRESS  SYMBOL  ADDRESS  SYMBOL  ADDRESS  SYMBOL  ADDRESS  
+
+ ABIT      107    ADDU     1950    AGAINR   2102    ALLU     1742    BACKU    1722    BADSTU   2859    BDEOFU    750   
+ BEGINU   1500    BLANKU   3027    BSP       995    BSP1U     827    BSP2U     863    BSP3U     957    BSPB      698   
+ BSPCU    2110    BSPP     2810    BUMPU    2753    BYCTB     807    BYCTU    1072    BYP1U    2290    BYPSSU    411   
+ CARD        0    CDXTU    2405    CKDELU   2368    CKREPU   2388    CKSEQ     726    CLEAR     702    CLEARB    342   
+ CLEARU   1021    CLNUPU   2240    CLRB      497    CLRP     2670    CLRPHP   2499    CLRU     1032    CLRWMU   2004   
+ CLRXTU   1052    CNVRT     478    COMNTP   2684    COMNTU   2732    COMP1     429    COMP2     607    COMP2U   2078   
+ COMPU    2031    COPYU     525    CPYNDU    692    CRDER     917    CTLXTU   2633    DELSWU   3079    DOALLP   2328   
+ DOCOR     538    DOCTLU   2594    DOHDRP   2605    DOOUTU   2307    DOPNTP   2435    DOPSAB   1900    DOSEQ     941   
+ DOSEQP   2639    END99U   2910    ENDOTP   3044    ENDRTR   2212    ENDSQ     962    ENDSWU   3098    ENDUPU   1139   
+ EOFSWU   1080    EOFU      601    EOJOB     877    EOJOBP   2454    ERASEU    637    ERRORP   2506    EXITU    1777   
+ FINALU   2260    FLOAT     406    FOUNDU   1730    GETR     2154    GETUPU    448    GMRK1B    835    GOTITU   2070   
+ HALT      906    HALT1B    407    HALT1U    669    HALT2     930    HALT2U   2790    HALTP    2488    HD2XTP   2763   
+ HDRSWP   2932    HDSW1P   2933    HDXTP    2577    HDXTU    2590    HEAD1P   2719    HEADRU   1656    HEADU    2532   
+ HEDSWU   3091    HOLD5    1099    IMAGEU    101    INPUTU   1500    INSERP   2517    INSERU   1806    INSRU    2173   
+ INSWU    3073    INSXTP   2555    IS2OPU   2000    ISMORU    727    ISUNKU   2821    LDUPDU    498    LIBRNB    521   
+ LIBSWU   1079    LISTR    2126    LOADDB     11    LOOP1B    362    LOOP1U   1628    LOOP2B    441    LOOP2U   1757   
+ LOOP3U   1810    LOOP4U   2835    LOOP6U   2941    LOPSAB    476    LSTCDU   2409    LSTSWU   3085    LTAPSW   2725   
+ MACRO     792    MOREU    1648    NAMEP    2905    NAMEU    3039    NEWPGP   2697    NEWPGU   2658    NEWXTU   2668   
+ NOBIT     106    NOIS2B    652    NOIS2U    774    NOISEB    637    NOISEP   2767    NOISEU    759    NOSXTB    672   
+ NOSXTP   2802    NOSXTU    794    NTFNDU   2884    NXTBK     362    NXTOPU   1942    ONOPU    2220    OPCODP   2669   
+ OPSAVP   2902    OPSWU    3048    OUTAPU  %U6      OUTPTB    558    OUTU     2008    OUTXTU   2320    PARTLU   1846   
+ PASSAB   1650    PASTU    1689    PGNOP    3041    PGNOU    3137    PRINT     200    PRINTP   2581    PRINTU   2672   
+ PRTHDP   2559    PRTXTP   2680    PTAGNP   2258    PTCTLU   2637    PTCXTU   2654    PTXTU    2771    QINSRU   2146   
+ QUITU    2775    RDCDU    2340    RDCTB     812    RDCTP    3043    RDCTR    2207    RDCTU    1130    RDERRB    676   
+ RDERRP   2806    RDERRR   2046    RDERRU    798    RDTP2P   2185    RDTPP    2372    RDTPU    2417    RDTRYB    710   
+ RDTRYP   2822    RDTRYR   2058    RDTRYU    839    RDXTB     723    RDXTP    2835    RDXTU     852    READP    2067   
+ READU    2324    REBEGU   1560    REOUTU    593    REPETU   2236    RETRY    1020    RTXTU    2491    RWDP     2483   
+ SELMCP   2119    SEQER     760    SEQNCU   2745    SEQNO    1087    SEQNOP   2948    SEQNOU   3167    SEQSWU   3064   
+ SEQXT     756    SERCHU   1584    SETUPP   2360    SETWM     596    SKPCTU   1082    SOMEU    1881    START     333   
+ STARTR   2009    SUB1      527    SUB2      471    SUBCT    1037    SUBCTU    999    SWICHU    556    SYSTP   %U1     
+ SYSTPB  %U1      SYSTPP  %U1      SYSTPR  %U1      SYSTPU  %U1      TEST1U   1885    THRUU    2126    TSTLCP   2296   
+ TSTSQU   2716    TSTSSB    418    TWOOPU   1916    UNKNP    2305    UNKWNU   2801    UPDSWU   1126    WK1U     3053   
+ WK2U     3058    WORK5    1119    WT2XTU   2528    WTAP1     675    WTAP1U    580    WTAP2     830    WTAP2U   2495   
+ WTCT     1255    WTCTU    1132    WTERR     973    WTERRU    928    WTTM      868    WTTRYU    982    WTXT     1033   
+ WTXTU     995    XR1        89    XR1B       89    XR1P       89    XR1U       89    XR2        94    XR2U       94   
+ XR3        99    XR3U       99    XXXX        0    ZONE      109   
+      *****  **     3 Errors                                                                             ERROR

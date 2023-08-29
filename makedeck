@@ -1,0 +1,13 @@
+#!/bin/csh
+
+# Line 1: Get all of the "decks" of autocoder
+# Line 2: Select "cards" that have L or N in column 40, or the
+#         first three cards (clear core and bootstrap) for phase 1.1
+# Line 3: Add in the control cards
+# Line 4: Sort with major key columns 78-79, minor key columns 72-75,
+#         output to auto.s.cd.
+
+cat autocoder?.cd | \
+  grep -e "^.......................................[LN]" -e '000[123]3711.$' | \
+  cat - control.cd | \
+  sort --key=1.78,79 --key=1.72,75 > auto.s.cd
